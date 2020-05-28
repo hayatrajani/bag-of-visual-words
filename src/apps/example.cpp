@@ -4,7 +4,7 @@
 // Copyright (c) 2020 Ignacio Vizzo, all rights reserved
 #include <iostream>
 
-  int main() {
+int main() {
   std::cout << "Write your awesome BoW Implementation on this project\n";
   return 0;
 }
