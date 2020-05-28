@@ -16,7 +16,7 @@
 default:
   image: gitlab.ipb.uni-bonn.de:4567/ipb-team/global/docker-images/ipb_opencv4:latest
   artifacts:
-    expire_in: 1 day
+    expire_in: 1 h
     untracked: true
     paths:
       - build/
@@ -35,6 +35,9 @@ stages:
 
 configure:
   stage: configure
+  before_script:
+    - mkdir -p build/
+    - mkdir -p results/{bin,lib}/
   script:
     - cmake -Bbuild/ -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_BUILD_TYPE=Release
 
