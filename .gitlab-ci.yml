@@ -12,29 +12,65 @@
 # in the code. This is the defacto standard in industry nowadays. Ask google for
 # more information if you are curious.
 
-# In this image you have all the necessary stuff to work with OpenCV4
-image: gitlab.ipb.uni-bonn.de:4567/ipb-team/global/docker-images/ipb_opencv4
-
-stages:
-  - build
-
-build:
-  stage: build
+# Template for all jobs
+.job_template: &job_template
+  image: gitlab.ipb.uni-bonn.de:4567/ipb-team/global/docker-images/ipb_opencv4:latest
   before_script:
-    # Set up the terminal.
     - export TERM=xterm
     - export SHELL=/bin/bash
-    - mkdir -p build/
+  tags:
+    - docker
+
+stages:
+  - configure
+  - analyse
+  - build
+  - test
+  - deploy
+
+configure:
+  <<: *job_template
+  stage: configure
+  script:
+    - cmake -Bbuild/ -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_BUILD_TYPE=Release
+
+clang-format:
+  <<: *job_template
+  stage: analyse
+  allow_failure: true
+  script:
+    - .ci/clang_format.sh
+
+clang-tidy:
+  <<: *job_template
+  stage: analyse
+  allow_failure: true
+  script:
+    - .ci/clang_tidy.sh
+
+build:
+  <<: *job_template
+  stage: build
   script:
     - cd build/
-    - cmake -DCMAKE_BUILD_TYPE=Release ../
     - make -j$(nproc --all) all
-    - ctest -VV
     - cd ../
+
+test:
+  <<: *job_template
+  stage: test
+  script:
+    - cd build/
+    - ctest -vv
+    - cd ../
+
+deploy:
+  <<: *job_template
+  stage: deploy
+  script:
+    - echo "Build succeeded, archiving artifacts..."
   artifacts:
-    name: opencv_artifacts
+    name: bow_artifacts
     expire_in: 1 week
     paths:
       - results/
-  tags:
-    - docker
