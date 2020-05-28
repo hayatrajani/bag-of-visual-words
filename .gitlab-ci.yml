@@ -13,7 +13,7 @@
 # more information if you are curious.
 
 # Template for all jobs
-.job_template: &job_template
+default:
   image: gitlab.ipb.uni-bonn.de:4567/ipb-team/global/docker-images/ipb_opencv4:latest
   cache:
     paths:
@@ -32,27 +32,23 @@ stages:
   - deploy
 
 configure:
-  <<: *job_template
   stage: configure
   script:
     - cmake -Bbuild/ -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_BUILD_TYPE=Release
 
 clang-format:
-  <<: *job_template
   stage: analyse
   allow_failure: true
   script:
     - .ci/clang_format.sh
 
 clang-tidy:
-  <<: *job_template
   stage: analyse
   allow_failure: true
   script:
     - .ci/clang_tidy.sh
 
 build:
-  <<: *job_template
   stage: build
   script:
     - cd build/
@@ -60,7 +56,6 @@ build:
     - cd ../
 
 test:
-  <<: *job_template
   stage: test
   script:
     - cd build/
@@ -68,7 +63,6 @@ test:
     - cd ../
 
 deploy:
-  <<: *job_template
   stage: deploy
   script:
     - echo "Build succeeded, archiving artifacts..."
