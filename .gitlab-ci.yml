@@ -22,9 +22,6 @@ default:
   before_script:
     - export TERM=xterm
     - export SHELL=/bin/bash
-    - ls -la build/
-  after_script:
-    - ls -la build/
   tags:
     - docker
 
