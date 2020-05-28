@@ -17,6 +17,7 @@ default:
   image: gitlab.ipb.uni-bonn.de:4567/ipb-team/global/docker-images/ipb_opencv4:latest
   artifacts:
     expire_in: 1 day
+    untracked: true
     paths:
       - build/
   before_script:
@@ -46,11 +47,15 @@ clang-format:
 clang-tidy:
   stage: analyse
   allow_failure: true
+  dependencies:
+    - configure
   script:
     - .ci/clang_tidy.sh
 
 build:
   stage: build
+  dependencies:
+    - configure
   script:
     - cd build/
     - make -j$(nproc --all) all
@@ -58,6 +63,8 @@ build:
 
 test:
   stage: test
+  dependencies:
+    - build
   script:
     - cd build/
     - ctest -vv
@@ -65,6 +72,8 @@ test:
 
 deploy:
   stage: deploy
+  dependencies:
+    - build
   script:
     - echo "Build succeeded, archiving artifacts..."
   artifacts:
