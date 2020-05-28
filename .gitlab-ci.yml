@@ -20,6 +20,7 @@ default:
     untracked: true
     paths:
       - build/
+      - results/
   before_script:
     - export TERM=xterm
     - export SHELL=/bin/bash
