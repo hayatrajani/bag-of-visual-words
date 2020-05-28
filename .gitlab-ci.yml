@@ -12,9 +12,10 @@
 # in the code. This is the defacto standard in industry nowadays. Ask google for
 # more information if you are curious.
 
+image: gitlab.ipb.uni-bonn.de:4567/ipb-team/global/docker-images/ipb_opencv4:latest
+
 # Template for all jobs
 default:
-  image: gitlab.ipb.uni-bonn.de:4567/ipb-team/global/docker-images/ipb_opencv4:latest
   artifacts:
     expire_in: 1 day
     untracked: true
