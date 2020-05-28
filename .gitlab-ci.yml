@@ -15,7 +15,8 @@
 # Template for all jobs
 default:
   image: gitlab.ipb.uni-bonn.de:4567/ipb-team/global/docker-images/ipb_opencv4:latest
-  cache:
+  artifacts:
+    expire_in: 1 day
     paths:
       - build/
   before_script:
