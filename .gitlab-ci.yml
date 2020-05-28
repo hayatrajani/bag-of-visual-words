@@ -15,6 +15,9 @@
 # Template for all jobs
 .job_template: &job_template
   image: gitlab.ipb.uni-bonn.de:4567/ipb-team/global/docker-images/ipb_opencv4:latest
+  cache:
+    paths:
+      - build/
   before_script:
     - export TERM=xterm
     - export SHELL=/bin/bash
