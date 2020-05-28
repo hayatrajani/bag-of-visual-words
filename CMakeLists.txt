@@ -17,11 +17,12 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src/)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src/lib/)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/)
 
-# Create a results dir in project root where we will put the results of the
-# build
-set(RESULTS_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/results)
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${RESULTS_OUTPUT_DIRECTORY}/lib)
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${RESULTS_OUTPUT_DIRECTORY}/bin)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
+
+# Use this directory to test your installation script
+set(CMAKE_INSTALL_PREFIX ${PROJECT_SOURCE_DIR}/results)
+install(DIRECTORY ${CMAKE_SOURCE_DIR}/include/
+        DESTINATION ${CMAKE_INSTALL_PREFIX}/include/)
 
 # Attempt to find OpenCV4 on your system, for more details please read
 # /usr/share/OpenCV/OpenCVConfig.cmake

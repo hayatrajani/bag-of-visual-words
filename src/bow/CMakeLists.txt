@@ -1,0 +1,14 @@
+add_library(bow example_lib.cpp)
+
+# Install headers
+install(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
+        DESTINATION "${CMAKE_INSTALL_PREFIX}/include"
+        PATTERN "*.cpp"
+        EXCLUDE
+        PATTERN "*.txt"
+        EXCLUDE)
+
+install(TARGETS bow
+        RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/bin
+        LIBRARY DESTINATION ${CMAKE_INSTALL_PREFIX}/lib
+        ARCHIVE DESTINATION ${CMAKE_INSTALL_PREFIX}/lib)

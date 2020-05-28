@@ -20,7 +20,6 @@ default:
     untracked: true
     paths:
       - build/
-      - results/
   before_script:
     - export TERM=xterm
     - export SHELL=/bin/bash
@@ -36,8 +35,6 @@ stages:
 
 configure:
   stage: configure
-  before_script:
-    - mkdir -p build/
     - mkdir -p results/{bin,lib}/
   script:
     - cmake -Bbuild/ -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_BUILD_TYPE=Release
@@ -80,6 +77,8 @@ deploy:
     - build
   script:
     - echo "Build succeeded, archiving artifacts..."
+    - cd build/
+    - make -j$(nproc --all) install
   artifacts:
     name: bow_artifacts
     expire_in: 1 week
