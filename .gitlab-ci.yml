@@ -40,6 +40,8 @@ configure:
 
 clang-format:
   stage: analyse
+  dependencies:
+    - configure
   allow_failure: true
   script:
     - make clang-format
