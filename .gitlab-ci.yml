@@ -42,7 +42,7 @@ clang-format:
   stage: analyse
   allow_failure: true
   script:
-    - .ci/clang_format.sh
+    - make clang-format
 
 clang-tidy:
   stage: analyse
@@ -50,7 +50,7 @@ clang-tidy:
   dependencies:
     - configure
   script:
-    - .ci/clang_tidy.sh
+    - make clang-tidy
 
 build:
   stage: build
