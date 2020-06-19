@@ -29,8 +29,10 @@ set(CMAKE_CXX_FLAGS_DEBUG "-g -O0")
 set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
-# Code Coverage Configuration
-include(cmake/TestCoverage.cmake)
+# Code Coverage, clang-format, clan=tidy, cppcheck, Configuration:
+include(TestCoverage)
+include(ClangFormat)
+include(StaticAnalyzers)
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src/)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src/lib/)
