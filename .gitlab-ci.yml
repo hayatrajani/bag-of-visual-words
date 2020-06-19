@@ -14,7 +14,7 @@
 
 # Template for all jobs
 default:
-  image: gitlab.ipb.uni-bonn.de:4567/ipb-team/global/docker-images/ipb_opencv4:latest
+  image: gitlab.igg.uni-bonn.de:4567/teaching/bag-of-visual-words:latest
   artifacts:
     expire_in: 1 h
     untracked: true
