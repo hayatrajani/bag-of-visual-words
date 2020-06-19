@@ -36,8 +36,7 @@ stages:
 configure:
   stage: configure
   script:
-    - mkdir -p build/ && cd build/
-    - cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_BUILD_TYPE=Release ..
+    - cmake -Bbuild/ -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_BUILD_TYPE=Release
 
 clang-format:
   stage: analyse
@@ -45,6 +44,7 @@ clang-format:
     - configure
   allow_failure: true
   script:
+    - cd build/
     - make clang-format
 
 clang-tidy:
@@ -53,6 +53,7 @@ clang-tidy:
   dependencies:
     - configure
   script:
+    - cd build/
     - make clang-tidy
 
 build:
@@ -60,6 +61,7 @@ build:
   dependencies:
     - configure
   script:
+    - cd build/
     - make -j$(nproc --all) all
 
 test:
@@ -67,6 +69,7 @@ test:
   dependencies:
     - build
   script:
+    - cd build/
     - ctest -vv
 
 coverage:
@@ -74,6 +77,7 @@ coverage:
   dependencies:
     - build
   script:
+    - cd build/
     - cmake -DENABLE_COVERAGE=ON ..
     - make clean
     - make -j$(nproc --all) all
