@@ -6,6 +6,21 @@ if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE Release)
 endif()
 
+# Attempt to find OpenCV4 on your system, for more details please read
+# /usr/share/OpenCV/OpenCVConfig.cmake
+find_package(OpenCV 4 REQUIRED)
+if(OpenCV_FOUND)
+  message(STATUS "Found OpenCV version ${OpenCV_VERSION}")
+  message(STATUS "OpenCV directories: ${OpenCV_INCLUDE_DIRS}")
+  include_directories(${OpenCV_INCLUDE_DIRS})
+else()
+  message(FATAL_ERROR "OpenCV not found, please read the README.md")
+endif(OpenCV_FOUND)
+
+# Enable testing
+enable_testing()
+find_package(GTest REQUIRED)
+
 # Set additional flags.
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
@@ -27,17 +42,6 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 set(CMAKE_INSTALL_PREFIX ${PROJECT_SOURCE_DIR}/results)
 install(DIRECTORY ${CMAKE_SOURCE_DIR}/include/
         DESTINATION ${CMAKE_INSTALL_PREFIX}/include/)
-
-# Attempt to find OpenCV4 on your system, for more details please read
-# /usr/share/OpenCV/OpenCVConfig.cmake
-find_package(OpenCV 4 REQUIRED)
-if(OpenCV_FOUND)
-  message(STATUS "Found OpenCV version ${OpenCV_VERSION}")
-  message(STATUS "OpenCV directories: ${OpenCV_INCLUDE_DIRS}")
-  include_directories(${OpenCV_INCLUDE_DIRS})
-else()
-  message(FATAL_ERROR "OpenCV not found, please read the README.md")
-endif(OpenCV_FOUND)
 
 # After all are setup is done, we can go to our src/ directory to build our
 # files

@@ -70,6 +70,17 @@ test:
     - ctest -vv
     - cd ../
 
+coverage:
+  stage: test
+  dependencies:
+    - build
+  script:
+    - cd build/
+    - cmake -DENABLE_COVERAGE=ON ..
+    - make -j$(nproc --all) all
+    - ../.ci/test_coverage.sh
+  coverage: '/TOTAL.*\s+(\S+\%)/'
+
 deploy:
   stage: deploy
   dependencies:
