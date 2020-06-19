@@ -3,7 +3,7 @@ if(NOT CLANG_FORMAT)
   message(SEND_ERROR "clang-format not found on your \$\{PATH\}")
 endif()
 
-add_custom_target(clang-format ALL
+add_custom_target(clang-format
                   COMMENT "Checking clang-format changes"
                   WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
                   COMMAND ${CMAKE_SOURCE_DIR}/scripts/clang_format.sh)

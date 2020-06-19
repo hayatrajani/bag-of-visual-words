@@ -17,7 +17,7 @@ if(ENABLE_CLANG_TIDY)
     message(SEND_ERROR "clang-tidy requested but executable not found")
   endif()
 
-  add_custom_target(clang-tidy ALL
+  add_custom_target(clang-tidy
                     COMMENT "Running clang-tidy on all sources"
                     WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
                     COMMAND ${CMAKE_SOURCE_DIR}/scripts/clang_tidy.sh)
