@@ -5,6 +5,7 @@
 **/*bin/
 **/*.zip
 **/*.tar
+.vscode/
 
 ### C++ ###
 # Prerequisites
