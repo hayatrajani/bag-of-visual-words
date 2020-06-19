@@ -18,7 +18,7 @@ LLVM_PROFILE_FILE="TestCoverage.profraw" ${TEST_COMMAND}
 llvm-profdata merge -sparse TestCoverage.profraw -o TestCoverage.profdata
 
 # Create the html report
-llvm-cov show  ${TEST_COMMAND} \
+llvm-cov show ${TEST_COMMAND} \
     -instr-profile=TestCoverage.profdata \
     -show-line-counts-or-regions \
     -output-dir=${BUILD_DIR}/coverage/ \
