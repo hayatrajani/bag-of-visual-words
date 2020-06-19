@@ -1,7 +1,7 @@
-# @file       Dockerfile
-# @author     Igor Bogoslavskyi [igor.bogoslavskyi@gmail.com]
+# @file      Dockerfile
+# @author    Ignacio Vizzo     [ivizzo@uni-bonn.de]
 #
-# Copyright (c) 2020  Ignacio Vizzo, all rights reserved
+# Copyright (c) 2020 Ignacio Vizzo, all rights reserved
 FROM gitlab.ipb.uni-bonn.de:4567/ipb-team/global/docker-images/ipb_opencv4
 LABEL maintainer "ivizzo@uni-bonn.de"
 
