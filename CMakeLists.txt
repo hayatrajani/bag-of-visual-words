@@ -1,3 +1,8 @@
+# ~~~
+# @file      CMakeLists.txt
+# @author    Ignacio Vizzo     [ivizzo@uni-bonn.de]
+#
+# Copyright (c) 2020 Ignacio Vizzo, all rights reserved
 cmake_minimum_required(VERSION 3.1)
 project(bow_final_project)
 

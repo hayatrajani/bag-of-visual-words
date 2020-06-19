@@ -1,3 +1,7 @@
+# ~~~
+# @author    Ignacio Vizzo     [ivizzo@uni-bonn.de]
+#
+# Copyright (c) 2020 Ignacio Vizzo, all rights reserved
 add_library(bow example_lib.cpp)
 
 # Install headers

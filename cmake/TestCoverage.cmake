@@ -1,3 +1,8 @@
+# ~~~
+# @file      TestCoverage.cmake
+# @author    Ignacio Vizzo     [ivizzo@uni-bonn.de]
+#
+# Copyright (c) 2020 Ignacio Vizzo, all rights reserved
 # Code Coverage Configuration
 if(ENABLE_COVERAGE)
   # NOTE: Coverage only works/makes sense with debug builds
