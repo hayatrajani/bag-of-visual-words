@@ -77,6 +77,7 @@ coverage:
   script:
     - cd build/
     - cmake -DENABLE_COVERAGE=ON ..
+    - make clean
     - make -j$(nproc --all) all
     - make test-coverage
   coverage: '/TOTAL.*\s+(\S+\%)/'
