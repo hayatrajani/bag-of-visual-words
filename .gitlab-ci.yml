@@ -78,7 +78,7 @@ coverage:
     - cd build/
     - cmake -DENABLE_COVERAGE=ON ..
     - make -j$(nproc --all) all
-    - ../.ci/test_coverage.sh
+    - make test-coverage
   coverage: '/TOTAL.*\s+(\S+\%)/'
 
 deploy:
