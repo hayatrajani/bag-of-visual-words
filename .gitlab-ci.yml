@@ -36,7 +36,8 @@ stages:
 configure:
   stage: configure
   script:
-    - cmake -Bbuild/ -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_BUILD_TYPE=Release
+    - mkdir -p build/ && cd build/
+    - cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_BUILD_TYPE=Release ..
 
 clang-format:
   stage: analyse
@@ -59,25 +60,20 @@ build:
   dependencies:
     - configure
   script:
-    - cd build/
     - make -j$(nproc --all) all
-    - cd ../
 
 test:
   stage: test
   dependencies:
     - build
   script:
-    - cd build/
     - ctest -vv
-    - cd ../
 
 coverage:
   stage: test
   dependencies:
     - build
   script:
-    - cd build/
     - cmake -DENABLE_COVERAGE=ON ..
     - make clean
     - make -j$(nproc --all) all
