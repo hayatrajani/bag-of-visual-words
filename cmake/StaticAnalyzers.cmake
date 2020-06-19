@@ -20,6 +20,6 @@ if(ENABLE_CLANG_TIDY)
   add_custom_target(clang-tidy ALL
                     COMMENT "Running clang-tidy on all sources"
                     WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-                    COMMAND ${CMAKE_SOURCE_DIR}/.ci/clang_tidy.sh)
+                    COMMAND ${CMAKE_SOURCE_DIR}/scripts/clang_tidy.sh)
 
 endif()

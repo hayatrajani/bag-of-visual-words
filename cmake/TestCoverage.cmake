@@ -9,5 +9,5 @@ if(ENABLE_COVERAGE)
   add_custom_target(test-coverage
                     COMMENT "Run test coverage for all sources expect for tests"
                     WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
-                    COMMAND ${CMAKE_SOURCE_DIR}/.ci/test_coverage.sh)
+                    COMMAND ${CMAKE_SOURCE_DIR}/scripts/test_coverage.sh)
 endif(ENABLE_COVERAGE)

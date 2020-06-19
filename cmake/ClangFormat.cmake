@@ -6,4 +6,4 @@ endif()
 add_custom_target(clang-format ALL
                   COMMENT "Checking clang-format changes"
                   WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-                  COMMAND ${CMAKE_SOURCE_DIR}/.ci/clang_format.sh)
+                  COMMAND ${CMAKE_SOURCE_DIR}/scripts/clang_format.sh)
