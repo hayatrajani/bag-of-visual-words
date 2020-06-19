@@ -5,6 +5,6 @@
 #ifndef BOW_H_
 #define BOW_H_
 
-#include <bow/library_example.hpp>
+#include <bow/example_lib.hpp>
 
 #endif  // BOW_H_
