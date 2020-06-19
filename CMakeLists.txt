@@ -6,6 +6,11 @@ if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE Release)
 endif()
 
+# Build options
+option(ENABLE_CPPCHECK "Enable static analysis with cppcheck" ON)
+option(ENABLE_CLANG_TIDY "Enable static analysis with clang-tidy" ON)
+option(ENABLE_COVERAGE "Enable coverage reporting" OFF)
+
 # Attempt to find OpenCV4 on your system, for more details please read
 # /usr/share/OpenCV/OpenCVConfig.cmake
 find_package(OpenCV 4 REQUIRED)

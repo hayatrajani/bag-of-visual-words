@@ -1,5 +1,3 @@
-option(ENABLE_CPPCHECK "Enable static analysis with cppcheck" ON)
-option(ENABLE_CLANG_TIDY "Enable static analysis with clang-tidy" ON)
 if(ENABLE_CPPCHECK)
   find_program(CPPCHECK cppcheck)
   if(CPPCHECK)

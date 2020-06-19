@@ -1,5 +1,4 @@
 # Code Coverage Configuration
-option(ENABLE_COVERAGE "Enable coverage reporting" OFF)
 if(ENABLE_COVERAGE)
   # NOTE: Coverage only works/makes sense with debug builds
   set(CMAKE_BUILD_TYPE "Debug")
