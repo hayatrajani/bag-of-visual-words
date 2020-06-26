@@ -2,6 +2,8 @@
 # Edit at https://www.gitignore.io/?templates=c++,cmake,python,opencv,visualstudiocode
 **/*build/
 **/*results/
+**/*.profdata
+**/*.profraw
 **/*bin/
 **/*.zip
 **/*.tar
