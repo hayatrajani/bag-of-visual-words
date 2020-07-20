@@ -1,8 +1,9 @@
 # ~~~
 # @file      CMakeLists.txt
-# @author    Ignacio Vizzo     [ivizzo@uni-bonn.de]
+# @author    Ignacio Vizzo (creator)    [ivizzo@uni-bonn.de]
+# @author    Hayat Rajani (modifier)    [hayat.rajani@uni-bonn.de]
 #
-# Copyright (c) 2020 Ignacio Vizzo, all rights reserved
+# Original Copyright (c) 2020 Ignacio Vizzo, all rights reserved
 cmake_minimum_required(VERSION 3.1)
 project(bow_final_project)
 
@@ -27,6 +28,17 @@ else()
   message(FATAL_ERROR "OpenCV not found, please read the README.md")
 endif(OpenCV_FOUND)
 
+# Attempt to find Boost on your system, for more details please read
+# /usr/share/cmake-version/Modules/FindBoost.cmake
+find_package(Boost COMPONENTS program_options REQUIRED)
+if(Boost_FOUND)
+  message(STATUS "Found Boost version ${Boost_VERSION}")
+  message(STATUS "Boost directories: ${Boost_INCLUDE_DIRS}")
+  include_directories(${Boost_INCLUDE_DIRS})
+else()
+  message(FATAL_ERROR "Boost not found, please read the README.md")
+endif(Boost_FOUND)
+
 # Enable testing
 enable_testing()
 find_package(GTest REQUIRED)
@@ -39,23 +51,24 @@ set(CMAKE_CXX_FLAGS_DEBUG "-g -O0")
 set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
-# Code Coverage, clang-format, clan=tidy, cppcheck, Configuration:
+# Code Coverage, clang-format, clang-tidy, cppcheck, Configuration:
 include(TestCoverage)
 include(ClangFormat)
 include(StaticAnalyzers)
 
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src/)
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src/lib/)
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/)
+include_directories(${PROJECT_SOURCE_DIR}/include)
 
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
+# Set build output directories
+set(BUILD_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/results)
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${BUILD_OUTPUT_DIRECTORY}/lib)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${BUILD_OUTPUT_DIRECTORY}/lib)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${BUILD_OUTPUT_DIRECTORY}/bin)
 
 # Use this directory to test your installation script
 set(CMAKE_INSTALL_PREFIX ${PROJECT_SOURCE_DIR}/results)
-install(DIRECTORY ${CMAKE_SOURCE_DIR}/include/
+install(DIRECTORY ${PROJECT_SOURCE_DIR}/include/
         DESTINATION ${CMAKE_INSTALL_PREFIX}/include/)
 
-# After all are setup is done, we can go to our src/ directory to build our
-# files
+# After all setup is done, we can go to our src/ directory to build our files
 add_subdirectory(src)
 add_subdirectory(tests)

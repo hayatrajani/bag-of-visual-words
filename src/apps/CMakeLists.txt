@@ -1,9 +1,4 @@
-# ~~~
-# @author    Ignacio Vizzo     [ivizzo@uni-bonn.de]
-#
-# Copyright (c) 2020 Ignacio Vizzo, all rights reserved
-add_executable(example example.cpp)
-install(TARGETS example
-        RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/bin
-        LIBRARY DESTINATION ${CMAKE_INSTALL_PREFIX}/lib
-        ARCHIVE DESTINATION ${CMAKE_INSTALL_PREFIX}/lib)
+add_executable(main main.cpp)
+target_link_libraries(main PRIVATE Boost::program_options dataset)
+install(TARGETS main DESTINATION bin)
+install(FILES bow_params.cfg DESTINATION bin)
