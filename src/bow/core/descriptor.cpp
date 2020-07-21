@@ -8,22 +8,14 @@
 #include <opencv2/imgcodecs.hpp>
 #include <opencv2/xfeatures2d.hpp>
 
-using cv::xfeatures2d::SiftDescriptorExtractor;
-using cv::xfeatures2d::SiftFeatureDetector;
-
 namespace bow {
 
 FeatureDescriptor::FeatureDescriptor(const std::string& image_path)
     : image_path_{image_path} {
-  // read image
   const cv::Mat image = cv::imread(image_path, cv::IMREAD_GRAYSCALE);
-  // detect key points
-  auto detector = SiftFeatureDetector::create();
   std::vector<cv::KeyPoint> keypoints;
-  detector->detect(image, keypoints);
-  // extract the SIFT descriptors
-  auto extractor = SiftDescriptorExtractor::create();
-  extractor->compute(image, keypoints, descriptors_);
+  auto detector = cv::xfeatures2d::SIFT::create();
+  detector->detectAndCompute(image, cv::noArray(), keypoints, descriptors_);
 }
 
 FeatureDescriptor FeatureDescriptor::deserialize(const std::string& filename) {
