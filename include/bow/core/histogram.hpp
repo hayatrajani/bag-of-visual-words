@@ -14,8 +14,11 @@ namespace bow {
 class Histogram {
  private:
   static std::vector<float> idf_;
-  std::string image_path_{};
-  std::vector<float> data_{};
+  const std::string image_path_;
+  std::vector<float> data_;
+
+  int nearestNeighbour_(const cv::Mat& descriptor, const cv::Mat& codebook,
+                        flannL2index* kdtree = nullptr);
 
   Histogram(const std::string& image_path, const std::vector<float>& data)
       : image_path_{image_path}, data_{data} {}
@@ -52,9 +55,9 @@ class Histogram {
   static bool hasIDF() { return idf_.empty(); }
   void reweight();
 
+  float compare(const Histogram& other) const;
   std::vector<std::pair<std::string, float>> compare(
       const std::vector<Histogram>& histograms, int top_k = 0) const;
-  float compare(const Histogram& other) const;
 };
 
 }  // namespace bow

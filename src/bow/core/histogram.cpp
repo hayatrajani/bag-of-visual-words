@@ -19,8 +19,8 @@ namespace bow {
 
 std::vector<float> Histogram::idf_{};
 
-static int nearestNeighbour(const cv::Mat& descriptor, const cv::Mat& codebook,
-                            flannL2index* kdtree = nullptr) {
+int nearestNeighbour(const cv::Mat& descriptor, const cv::Mat& codebook,
+                     flannL2index* kdtree = nullptr) {
   if (kdtree) {
     int k{1};
     std::vector<int> indices(k);

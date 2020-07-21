@@ -38,6 +38,12 @@ cv::Mat extractDescriptors(const std::string& image_path, bool verbose) {
   if (verbose) {
     std::cout << "Extracting descriptors from " << image_path << '\n';
   }
+  if (!fs::exists(image_path)) {
+    throw std::runtime_error("Image does not exist!");
+  }
+  if (image_path.compare(image_path.length() - 4, 4, ".png") != 0) {
+    throw std::runtime_error("Invalid image!");
+  }
   // read image
   const cv::Mat image = cv::imread(image_path, cv::IMREAD_GRAYSCALE);
   // detect key points
@@ -48,8 +54,9 @@ cv::Mat extractDescriptors(const std::string& image_path, bool verbose) {
   cv::Mat descriptors;
   auto extractor = SiftDescriptorExtractor::create();
   extractor->compute(image, keypoints, descriptors);
+  // return result
   if (verbose) {
-    std::cout << "Done\n";
+    std::cout << "Done\n\n";
   }
   return descriptors;
 }
@@ -71,9 +78,10 @@ buildDescriptorDataset(const fs::path& dataset_path, bool save_to_disk,
             ? dataset_path.parent_path().parent_path() / "descriptors"
             : dataset_path.parent_path() / "descriptors";
     if (verbose) {
-      std::cout << "Creating a directory to save the descriptor dataset:\n\t"
-                << desc_dataset_path
-                << "\nNote that any pre-existing files will be overwritten!\n";
+      std::cout
+          << "\tCreating a directory to save the dataset:\n\t"
+          << desc_dataset_path
+          << "\n\tNote that any pre-existing files will be overwritten!\n";
     }
     if (fs::exists(desc_dataset_path)) {
       fs::remove_all(desc_dataset_path);
@@ -88,7 +96,7 @@ buildDescriptorDataset(const fs::path& dataset_path, bool save_to_disk,
     const fs::path image_path{image_file.path()};
     const std::string image_path_str{image_path.string()};
     if (verbose) {
-      std::cout << "Processing " << image_path.filename() << '\n';
+      std::cout << "\tProcessing " << image_path.filename() << '\n';
     }
     if (image_path.extension() == ".png") {
       auto descriptors = extractDescriptors(image_path_str);
@@ -99,17 +107,17 @@ buildDescriptorDataset(const fs::path& dataset_path, bool save_to_disk,
             (desc_dataset_path / image_path.stem()).string() + ".bin"};
         try {
           if (verbose) {
-            std::cout << "Writing to disk\n";
+            std::cout << "\tWriting to disk\n";
           }
           serialization::serialize(descriptors, image_path_str, desc_file_path);
         } catch (const std::runtime_error& e) {
-          std::cerr << "[ERROR] Descriptors for image " << image_path_str
+          std::cerr << "\t[ERROR] Descriptors for image " << image_path_str
                     << " not saved to disk! " << e.what() << '\n';
         }
       }
     } else {
       if (verbose) {
-        std::cout << "Skipping...\n";
+        std::cout << "\tSkipping...\n";
       }
     }
   }
@@ -135,7 +143,7 @@ loadDescriptorDataset(const fs::path& dataset_path, bool verbose) {
   for (const auto& desc_file : fs::directory_iterator(dataset_path)) {
     const fs::path desc_file_path{desc_file.path()};
     if (verbose) {
-      std::cout << "Processing " << desc_file_path.filename() << '\n';
+      std::cout << "\tProcessing " << desc_file_path.filename() << '\n';
     }
     if (desc_file_path.extension() == ".bin") {
       try {
@@ -144,11 +152,11 @@ loadDescriptorDataset(const fs::path& dataset_path, bool verbose) {
         sift_dataset.emplace_back(descriptors);
         image_paths.emplace_back(image_path);
       } catch (const std::runtime_error& e) {
-        std::cerr << "[ERROR] Descriptors not loaded! " << e.what() << '\n';
+        std::cerr << "\t[ERROR] Descriptors not loaded! " << e.what() << '\n';
       }
     } else {
       if (verbose) {
-        std::cout << "Skipping...\n";
+        std::cout << "\tSkipping...\n";
       }
     }
   }
@@ -183,7 +191,7 @@ Histogram computeHistogram(const cv::Mat& descriptors,
       }
     }
     if (verbose) {
-      std::cout << "Done\n";
+      std::cout << "Done\n\n";
     }
     return histogram;
   } catch (const std::runtime_error& e) {
@@ -200,7 +208,7 @@ std::vector<Histogram> buildHistogramDataset(
     bool save_to_disk, bool verbose) {
   if (verbose) {
     std::cout << "Building histogram dataset...\n";
-    std::cout << "Building codebook\n";
+    std::cout << "\tBuilding codebook\n";
   }
   Dictionary& dictionary = Dictionary::getInstance();
   dictionary.build(max_iter, num_clusters, descriptors, use_flann,
@@ -210,21 +218,22 @@ std::vector<Histogram> buildHistogramDataset(
     fs::path image_path{image_paths[0]};
     hist_dataset_path = image_path.parent_path().parent_path() / "histograms";
     if (verbose) {
-      std::cout << "Creating a directory to save the histogram dataset:\n\t"
-                << hist_dataset_path
-                << "\nNote that any pre-existing files will be overwritten!\n";
+      std::cout
+          << "\tCreating a directory to save the histogram dataset:\n\t"
+          << hist_dataset_path
+          << "\n\tNote that any pre-existing files will be overwritten!\n";
     }
     if (fs::exists(hist_dataset_path)) {
       fs::remove_all(hist_dataset_path);
     }
     fs::create_directory(hist_dataset_path);
     if (verbose) {
-      std::cout << "Writing codebook to disk\n";
+      std::cout << "\tWriting codebook to disk\n";
     }
     try {
       dictionary.serialize((hist_dataset_path / "bow_codebook.dict").string());
     } catch (const std::runtime_error& e) {
-      std::cerr << "[ERROR] Codebook not saved to disk! " << e.what() << '\n';
+      std::cerr << "\t[ERROR] Codebook not saved to disk! " << e.what() << '\n';
     }
   }
   std::size_t file_count{descriptors.size()};
@@ -233,7 +242,7 @@ std::vector<Histogram> buildHistogramDataset(
   try {
     for (std::size_t i = 0; i < file_count; ++i) {
       if (verbose) {
-        std::cout << "Computing histogram for image "
+        std::cout << "\tComputing histogram for image "
                   << fs::path(image_paths[i]).filename() << '\n';
       }
       histogram_dataset.emplace_back(
@@ -250,25 +259,24 @@ std::vector<Histogram> buildHistogramDataset(
   }
   if (reweight) {
     if (verbose) {
-      std::cout << "Computing histogram dataset's IDFs for reweighting\n";
+      std::cout << "\tComputing histogram dataset's IDFs for reweighting\n";
     }
     Histogram::computeIDF(histogram_dataset);
     if (save_to_disk) {
       try {
         if (verbose) {
-          std::cout << "Writing IDFs to disk\n";
+          std::cout << "\tWriting IDFs to disk\n";
         }
-        std::cout << hist_dataset_path << '\n';
         Histogram::saveIDF(
             (hist_dataset_path / "histogram_dataset.idf").string());
       } catch (const std::runtime_error& e) {
-        std::cerr << "[ERROR] Histogram dataset's IDFs not saved to disk! "
+        std::cerr << "\t[ERROR] Histogram dataset's IDFs not saved to disk! "
                   << e.what() << '\n';
       }
     }
     for (std::size_t i = 0; i < file_count; ++i) {
       if (verbose) {
-        std::cout << "Reweighting histogram for image "
+        std::cout << "\tReweighting histogram for image "
                   << fs::path(image_paths[i]).filename() << '\n';
       }
       histogram_dataset[i].reweight();
@@ -292,7 +300,7 @@ std::vector<Histogram> loadHistogramDataset(const fs::path& dataset_path,
     throw std::runtime_error("No valid histogram files found!");
   }
   if (verbose) {
-    std::cout << "Loading codebook\n";
+    std::cout << "\tLoading codebook\n";
   }
   Dictionary& dictionary = Dictionary::getInstance();
   try {
@@ -305,23 +313,23 @@ std::vector<Histogram> loadHistogramDataset(const fs::path& dataset_path,
   for (const auto& hist_file : fs::directory_iterator(dataset_path)) {
     const fs::path hist_file_path{hist_file.path()};
     if (verbose) {
-      std::cout << "Processing " << hist_file_path.filename() << '\n';
+      std::cout << "\tProcessing " << hist_file_path.filename() << '\n';
     }
     if (hist_file_path.extension() == ".csv") {
       try {
         histogram_dataset.emplace_back(
             Histogram::readFromCSV(hist_file_path.string()));
       } catch (const std::runtime_error& e) {
-        std::cerr << "[ERROR] Histogram not loaded! " << e.what() << '\n';
+        std::cerr << "\t[ERROR] Histogram not loaded! " << e.what() << '\n';
       }
     } else {
       if (verbose) {
-        std::cout << "Skipping...\n";
+        std::cout << "\tSkipping...\n";
       }
     }
   }
   if (verbose) {
-    std::cout << "Loading histogram dataset's IDFs\n";
+    std::cout << "\tLoading histogram dataset's IDFs\n";
   }
   try {
     Histogram::loadIDF((dataset_path / "histogram_dataset.idf").string());
@@ -345,11 +353,11 @@ static void histToDisk_(bool save_to_disk, bool verbose,
         (hist_dataset_path / image_path.stem()).string() + ".csv"};
     try {
       if (verbose) {
-        std::cout << "Writing to disk\n";
+        std::cout << "\tWriting to disk\n";
       }
       histogram.writeToCSV(hist_file_path);
     } catch (const std::runtime_error& e) {
-      std::cerr << "[ERROR] Histogram for image " << image_path
+      std::cerr << "\t[ERROR] Histogram for image " << image_path
                 << " not saved to disk! " << e.what() << '\n';
     }
   }

@@ -142,25 +142,15 @@ int main(int argc, char** argv) {
       const auto& query_paths{
           var_map["query-path"].as<std::vector<std::string>>()};
       for (const std::string& query_path : query_paths) {
-        if (fs::exists(query_path)) {
-          if (query_path.compare(query_path.length() - 4, 4, ".png") == 0) {
-            auto histogram = ds::computeHistogram(
-                ds::extractDescriptors(query_path, verbose), query_path,
-                reweight, verbose);
-            auto similarities =
-                histogram.compare(histogram_dataset, num_similar);
-            std::cout << "Images similar to: " << histogram.getImagePath()
-                      << '\n';
-            for (const auto& similarity : similarities) {
-              std::cout << '\t' << similarity.first << '\n';
-            }
-            std::cout << '\n';
-          } else {
-            std::cerr << "Invalid image! Skipping " << query_path << '\n';
-          }
-        } else {
-          std::cerr << "Image does not exist! Skipping " << query_path << '\n';
+        auto histogram =
+            ds::computeHistogram(ds::extractDescriptors(query_path, verbose),
+                                 query_path, reweight, verbose);
+        auto similarities = histogram.compare(histogram_dataset, num_similar);
+        std::cout << "Images similar to: " << histogram.getImagePath() << '\n';
+        for (const auto& similarity : similarities) {
+          std::cout << '\t' << similarity.first << '\n';
         }
+        std::cout << '\n';
       }
     } else {
       std::cout << "[WARNING] No query image(s) found! Histograms were "
