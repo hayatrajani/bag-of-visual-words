@@ -118,17 +118,17 @@ int main(int argc, char** argv) {
   try {
     if (var_map.count("image-path")) {
       const fs::path dataset_path{var_map["image-path"].as<std::string>()};
-      const auto [descriptors, image_paths] =
+      const auto descriptor_dataset =
           ds::buildDescriptorDataset(dataset_path, desc_to_disk, verbose);
       histogram_dataset = ds::buildHistogramDataset(
-          descriptors, image_paths, max_iter, num_clusters, use_flann,
+          descriptor_dataset, max_iter, num_clusters, use_flann,
           use_opencv_kmeans, epsilon, reweight, hist_to_disk, verbose);
     } else if (var_map.count("descriptor-path")) {
       const fs::path dataset_path{var_map["descriptor-path"].as<std::string>()};
-      const auto [descriptors, image_paths] =
+      const auto descriptor_dataset =
           ds::loadDescriptorDataset(dataset_path, verbose);
       histogram_dataset = ds::buildHistogramDataset(
-          descriptors, image_paths, max_iter, num_clusters, use_flann,
+          descriptor_dataset, max_iter, num_clusters, use_flann,
           use_opencv_kmeans, epsilon, reweight, hist_to_disk, verbose);
     } else if (var_map.count("histogram-path")) {
       const fs::path dataset_path{var_map["histogram-path"].as<std::string>()};
@@ -142,9 +142,8 @@ int main(int argc, char** argv) {
       const auto& query_paths{
           var_map["query-path"].as<std::vector<std::string>>()};
       for (const std::string& query_path : query_paths) {
-        auto histogram =
-            ds::computeHistogram(ds::extractDescriptors(query_path, verbose),
-                                 query_path, reweight, verbose);
+        auto histogram = ds::computeHistogram(
+            ds::extractDescriptors(query_path, verbose), reweight, verbose);
         auto similarities = histogram.compare(histogram_dataset, num_similar);
         std::cout << "Images similar to: " << histogram.getImagePath() << '\n';
         for (const auto& similarity : similarities) {

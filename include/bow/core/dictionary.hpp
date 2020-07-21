@@ -7,6 +7,7 @@
 #include <opencv2/core/mat.hpp>
 #include <opencv2/flann.hpp>
 
+#include "bow/core/descriptor.hpp"
 #include "bow/core/kmeans.hpp"
 
 namespace bow {
@@ -38,7 +39,7 @@ class Dictionary {
   }
 
   void build(int max_iter, int dict_size,
-             const std::vector<cv::Mat>& descriptors,
+             const std::vector<FeatureDescriptor>& descriptor_dataset,
              bool build_flann_index = false, bool use_opencv_kmeans = true,
              double epsilon = 0.001);
 

@@ -6,15 +6,10 @@
 #include <vector>
 
 #include <opencv2/core/mat.hpp>
-#include <opencv2/imgcodecs.hpp>
-#include <opencv2/xfeatures2d.hpp>
 
+#include "bow/core/descriptor.hpp"
 #include "bow/core/dictionary.hpp"
 #include "bow/core/histogram.hpp"
-#include "bow/io/serialization.hpp"
-
-using cv::xfeatures2d::SiftDescriptorExtractor;
-using cv::xfeatures2d::SiftFeatureDetector;
 
 namespace fs = std::filesystem;
 
@@ -34,7 +29,8 @@ int datasetSize(const fs::path& path, const std::string& extension) {
   return std::distance(fs::directory_iterator(path), {});
 }
 
-cv::Mat extractDescriptors(const std::string& image_path, bool verbose) {
+FeatureDescriptor extractDescriptors(const std::string& image_path,
+                                     bool verbose) {
   if (verbose) {
     std::cout << "Extracting descriptors from " << image_path << '\n';
   }
@@ -44,26 +40,15 @@ cv::Mat extractDescriptors(const std::string& image_path, bool verbose) {
   if (image_path.compare(image_path.length() - 4, 4, ".png") != 0) {
     throw std::runtime_error("Invalid image!");
   }
-  // read image
-  const cv::Mat image = cv::imread(image_path, cv::IMREAD_GRAYSCALE);
-  // detect key points
-  auto detector = SiftFeatureDetector::create();
-  std::vector<cv::KeyPoint> keypoints;
-  detector->detect(image, keypoints);
-  // extract the SIFT descriptors
-  cv::Mat descriptors;
-  auto extractor = SiftDescriptorExtractor::create();
-  extractor->compute(image, keypoints, descriptors);
-  // return result
+  FeatureDescriptor descriptor(image_path);
   if (verbose) {
     std::cout << "Done\n\n";
   }
-  return descriptors;
+  return descriptor;
 }
 
-std::tuple<std::vector<cv::Mat>, std::vector<std::string>>
-buildDescriptorDataset(const fs::path& dataset_path, bool save_to_disk,
-                       bool verbose) {
+std::vector<FeatureDescriptor> buildDescriptorDataset(
+    const fs::path& dataset_path, bool save_to_disk, bool verbose) {
   if (verbose) {
     std::cout << "Building descriptor dataset...\n";
   }
@@ -88,10 +73,8 @@ buildDescriptorDataset(const fs::path& dataset_path, bool save_to_disk,
     }
     fs::create_directory(desc_dataset_path);
   }
-  std::vector<cv::Mat> sift_dataset;
-  sift_dataset.reserve(file_count);
-  std::vector<std::string> image_paths;
-  image_paths.reserve(file_count);
+  std::vector<FeatureDescriptor> descriptor_dataset;
+  descriptor_dataset.reserve(file_count);
   for (const auto& image_file : fs::directory_iterator(dataset_path)) {
     const fs::path image_path{image_file.path()};
     const std::string image_path_str{image_path.string()};
@@ -99,9 +82,7 @@ buildDescriptorDataset(const fs::path& dataset_path, bool save_to_disk,
       std::cout << "\tProcessing " << image_path.filename() << '\n';
     }
     if (image_path.extension() == ".png") {
-      auto descriptors = extractDescriptors(image_path_str);
-      sift_dataset.emplace_back(descriptors);
-      image_paths.emplace_back(image_path_str);
+      descriptor_dataset.emplace_back(FeatureDescriptor(image_path_str));
       if (save_to_disk) {
         const std::string desc_file_path{
             (desc_dataset_path / image_path.stem()).string() + ".bin"};
@@ -109,7 +90,7 @@ buildDescriptorDataset(const fs::path& dataset_path, bool save_to_disk,
           if (verbose) {
             std::cout << "\tWriting to disk\n";
           }
-          serialization::serialize(descriptors, image_path_str, desc_file_path);
+          descriptor_dataset.back().serialize(desc_file_path);
         } catch (const std::runtime_error& e) {
           std::cerr << "\t[ERROR] Descriptors for image " << image_path_str
                     << " not saved to disk! " << e.what() << '\n';
@@ -124,11 +105,11 @@ buildDescriptorDataset(const fs::path& dataset_path, bool save_to_disk,
   if (verbose) {
     std::cout << "Done\n\n";
   }
-  return std::make_tuple(sift_dataset, image_paths);
+  return descriptor_dataset;
 }
 
-std::tuple<std::vector<cv::Mat>, std::vector<std::string>>
-loadDescriptorDataset(const fs::path& dataset_path, bool verbose) {
+std::vector<FeatureDescriptor> loadDescriptorDataset(
+    const fs::path& dataset_path, bool verbose) {
   if (verbose) {
     std::cout << "Loading descriptor dataset...\n";
   }
@@ -136,10 +117,8 @@ loadDescriptorDataset(const fs::path& dataset_path, bool verbose) {
   if (file_count == 0) {
     throw std::runtime_error("No valid descriptors found!");
   }
-  std::vector<cv::Mat> sift_dataset;
-  sift_dataset.reserve(file_count);
-  std::vector<std::string> image_paths;
-  image_paths.reserve(file_count);
+  std::vector<FeatureDescriptor> descriptor_dataset;
+  descriptor_dataset.reserve(file_count);
   for (const auto& desc_file : fs::directory_iterator(dataset_path)) {
     const fs::path desc_file_path{desc_file.path()};
     if (verbose) {
@@ -147,10 +126,8 @@ loadDescriptorDataset(const fs::path& dataset_path, bool verbose) {
     }
     if (desc_file_path.extension() == ".bin") {
       try {
-        auto [descriptors, image_path] =
-            serialization::deserialize(desc_file_path.string());
-        sift_dataset.emplace_back(descriptors);
-        image_paths.emplace_back(image_path);
+        descriptor_dataset.emplace_back(
+            FeatureDescriptor::deserialize(desc_file_path.string()));
       } catch (const std::runtime_error& e) {
         std::cerr << "\t[ERROR] Descriptors not loaded! " << e.what() << '\n';
       }
@@ -163,11 +140,10 @@ loadDescriptorDataset(const fs::path& dataset_path, bool verbose) {
   if (verbose) {
     std::cout << "Done\n\n";
   }
-  return std::make_tuple(sift_dataset, image_paths);
+  return descriptor_dataset;
 }
 
-Histogram computeHistogram(const cv::Mat& descriptors,
-                           const std::string& image_path, bool reweight,
+Histogram computeHistogram(const FeatureDescriptor& descriptor, bool reweight,
                            bool verbose) {
   if (verbose) {
     std::cout << "Fetching codebook\n";
@@ -175,9 +151,11 @@ Histogram computeHistogram(const cv::Mat& descriptors,
   Dictionary& dictionary = Dictionary::getInstance();
   try {
     if (verbose) {
-      std::cout << "Computing histogram for " << image_path << '\n';
+      std::cout << "Computing histogram for " << descriptor.getImagePath()
+                << '\n';
     }
-    Histogram histogram(image_path, descriptors, dictionary);
+    Histogram histogram(descriptor.getImagePath(), descriptor.getDescriptors(),
+                        dictionary);
     if (reweight) {
       if (verbose) {
         std::cout << "Reweighting histogram\n";
@@ -202,20 +180,19 @@ Histogram computeHistogram(const cv::Mat& descriptors,
 }
 
 std::vector<Histogram> buildHistogramDataset(
-    const std::vector<cv::Mat>& descriptors,
-    const std::vector<std::string>& image_paths, int max_iter, int num_clusters,
-    bool use_flann, bool use_opencv_kmeans, float epsilon, bool reweight,
-    bool save_to_disk, bool verbose) {
+    const std::vector<FeatureDescriptor>& descriptor_dataset, int max_iter,
+    int num_clusters, bool use_flann, bool use_opencv_kmeans, float epsilon,
+    bool reweight, bool save_to_disk, bool verbose) {
   if (verbose) {
     std::cout << "Building histogram dataset...\n";
     std::cout << "\tBuilding codebook\n";
   }
   Dictionary& dictionary = Dictionary::getInstance();
-  dictionary.build(max_iter, num_clusters, descriptors, use_flann,
+  dictionary.build(max_iter, num_clusters, descriptor_dataset, use_flann,
                    use_opencv_kmeans, epsilon);
   fs::path hist_dataset_path;
   if (save_to_disk) {
-    fs::path image_path{image_paths[0]};
+    fs::path image_path{descriptor_dataset[0].getImagePath()};
     hist_dataset_path = image_path.parent_path().parent_path() / "histograms";
     if (verbose) {
       std::cout
@@ -236,20 +213,20 @@ std::vector<Histogram> buildHistogramDataset(
       std::cerr << "\t[ERROR] Codebook not saved to disk! " << e.what() << '\n';
     }
   }
-  std::size_t file_count{descriptors.size()};
   std::vector<Histogram> histogram_dataset;
-  histogram_dataset.reserve(file_count);
+  histogram_dataset.reserve(descriptor_dataset.size());
   try {
-    for (std::size_t i = 0; i < file_count; ++i) {
+    for (const auto& descriptor : descriptor_dataset) {
+      const std::string image_path{descriptor.getImagePath()};
       if (verbose) {
         std::cout << "\tComputing histogram for image "
-                  << fs::path(image_paths[i]).filename() << '\n';
+                  << fs::path(image_path).filename() << '\n';
       }
       histogram_dataset.emplace_back(
-          Histogram(image_paths[i], descriptors[i], dictionary));
+          Histogram(image_path, descriptor.getDescriptors(), dictionary));
       if (!reweight) {
-        histToDisk_(save_to_disk, verbose, hist_dataset_path, image_paths[i],
-                    histogram_dataset[i]);
+        histToDisk_(save_to_disk, verbose, hist_dataset_path, image_path,
+                    histogram_dataset.back());
       }
     }
   } catch (const std::runtime_error& e) {
@@ -274,14 +251,14 @@ std::vector<Histogram> buildHistogramDataset(
                   << e.what() << '\n';
       }
     }
-    for (std::size_t i = 0; i < file_count; ++i) {
+    for (auto& histogram : histogram_dataset) {
       if (verbose) {
         std::cout << "\tReweighting histogram for image "
-                  << fs::path(image_paths[i]).filename() << '\n';
+                  << fs::path(histogram.getImagePath()).filename() << '\n';
       }
-      histogram_dataset[i].reweight();
-      histToDisk_(save_to_disk, verbose, hist_dataset_path, image_paths[i],
-                  histogram_dataset[i]);
+      histogram.reweight();
+      histToDisk_(save_to_disk, verbose, hist_dataset_path,
+                  histogram.getImagePath(), histogram);
     }
   }
   if (verbose) {

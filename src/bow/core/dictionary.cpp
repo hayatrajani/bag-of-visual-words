@@ -8,6 +8,7 @@
 #include <opencv2/core/mat.hpp>
 #include <opencv2/flann.hpp>
 
+#include "bow/core/descriptor.hpp"
 #include "bow/core/kmeans.hpp"
 
 namespace fs = std::filesystem;
@@ -15,12 +16,12 @@ namespace fs = std::filesystem;
 namespace bow {
 
 void Dictionary::build(int max_iter, int dict_size,
-                       const std::vector<cv::Mat>& descriptors,
+                       const std::vector<FeatureDescriptor>& descriptor_dataset,
                        bool build_flann_index, bool use_opencv_kmeans,
                        double epsilon) {
-  if (!descriptors.empty()) {
-    codebook_ =
-        kMeans(descriptors, dict_size, max_iter, use_opencv_kmeans, epsilon);
+  if (!descriptor_dataset.empty()) {
+    codebook_ = kMeans(descriptor_dataset, dict_size, max_iter,
+                       use_opencv_kmeans, epsilon);
     if (build_flann_index) {
       buildIndex();
     }
