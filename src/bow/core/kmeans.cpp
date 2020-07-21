@@ -4,16 +4,18 @@
 
 #include <opencv2/core.hpp>
 
+#include "bow/core/descriptor.hpp"
+
 namespace bow {
 
-cv::Mat kMeans(const std::vector<cv::Mat>& descriptors, int k, int max_iter,
-               bool use_opencv_kmeans, double epsilon) {
+cv::Mat kMeans(const std::vector<FeatureDescriptor>& descriptor_dataset, int k,
+               int max_iter, bool use_opencv_kmeans, double epsilon) {
   if (use_opencv_kmeans) {
     const double eps{epsilon};
     const int attempts{1};
     cv::Mat stacked_descriptors;
-    for (const auto& descriptor : descriptors) {
-      stacked_descriptors.push_back(descriptor);
+    for (const auto& descriptor : descriptor_dataset) {
+      stacked_descriptors.push_back(descriptor.getDescriptors());
     }
     cv::Mat centers;
     cv::Mat labels;
