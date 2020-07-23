@@ -14,7 +14,7 @@ FeatureDescriptor::FeatureDescriptor(const std::string& image_path)
     : image_path_{image_path} {
   const cv::Mat image = cv::imread(image_path, cv::IMREAD_GRAYSCALE);
   std::vector<cv::KeyPoint> keypoints;
-  auto detector = cv::xfeatures2d::SIFT::create();
+  static auto detector = cv::xfeatures2d::SIFT::create();
   detector->detectAndCompute(image, cv::noArray(), keypoints, descriptors_);
 }
 
