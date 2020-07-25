@@ -1,0 +1,30 @@
+* {
+  box-sizing: border-box;
+}
+
+.column {
+  border: 3px solid bisque;
+  width: 33.33%;
+  padding: 0 20px;
+  overflow-wrap: break-word;
+}
+
+.column img {
+  vertical-align: middle;
+  width: 100%;
+}
+
+.column * {
+  text-align: center;
+}
+
+.row {
+  display: flex;
+  justify-content: center;
+  padding: 0 4px;
+}
+
+.fit-image {
+  width: 100%;
+  object-fit: contain;
+}

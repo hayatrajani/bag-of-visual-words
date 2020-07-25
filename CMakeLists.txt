@@ -1,9 +1,9 @@
-# ~~~
-# @file      CMakeLists.txt
-# @author    Ignacio Vizzo (creator)    [ivizzo@uni-bonn.de]
-# @author    Hayat Rajani (modifier)    [hayat.rajani@uni-bonn.de]
+# @file     CMakeLists.txt
+# @author   Ignacio Vizzo (creator)   [ivizzo@uni-bonn.de]
+# @author   Hayat Rajani (modifier)   [hayat.rajani@uni-bonn.de]
 #
 # Original Copyright (c) 2020 Ignacio Vizzo, all rights reserved
+
 cmake_minimum_required(VERSION 3.1)
 project(bow_final_project)
 

@@ -9,10 +9,12 @@
 #include <boost/program_options.hpp>
 
 #include "bow/io/dataset.hpp"
+#include "bow/web/image_browser.hpp"
 
+namespace fs = std::filesystem;
 namespace po = boost::program_options;
 namespace ds = bow::io::dataset;
-namespace fs = std::filesystem;
+namespace ib = bow::web::image_browser;
 
 template <typename T>
 std::ostream& operator<<(std::ostream& os, const std::vector<T>& vec) {
@@ -145,12 +147,9 @@ int main(int argc, char** argv) {
         auto histogram = ds::computeHistogram(
             ds::extractDescriptors(query_path, verbose), reweight, verbose);
         auto similarities = histogram.compare(histogram_dataset, num_similar);
-        std::cout << "Images similar to: " << histogram.getImagePath() << '\n';
-        for (const auto& similarity : similarities) {
-          std::cout << '\t' << similarity.first << '\n';
-        }
-        std::cout << '\n';
+        ib::createImageBrowser(query_path, similarities);
       }
+      std::cout << "Results saved to disk!\n";
     } else {
       std::cout << "[WARNING] No query image(s) found! Histograms were "
                    "nonetheless computed and stored within the specified "
