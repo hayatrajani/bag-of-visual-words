@@ -5,7 +5,6 @@
 #include <vector>
 
 #include <opencv2/core/mat.hpp>
-#include <opencv2/features2d.hpp>
 
 namespace bow {
 

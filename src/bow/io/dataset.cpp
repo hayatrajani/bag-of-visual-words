@@ -17,7 +17,22 @@ namespace bow::io::dataset {
 
 static void histToDisk_(bool save_to_disk, bool verbose,
                         const fs::path& hist_dataset_path,
-                        const fs::path& image_path, const Histogram& histogram);
+                        const fs::path& image_path,
+                        const Histogram& histogram) {
+  if (save_to_disk) {
+    const std::string hist_file_path{
+        (hist_dataset_path / image_path.stem()).string() + ".csv"};
+    try {
+      if (verbose) {
+        std::cout << "\tWriting to disk\n";
+      }
+      histogram.writeToCSV(hist_file_path);
+    } catch (const std::runtime_error& e) {
+      std::cerr << "\t[ERROR] Histogram for image " << image_path
+                << " not saved to disk! " << e.what() << '\n';
+    }
+  }
+}
 
 int datasetSize(const fs::path& path, const std::string& extension) {
   if (!extension.empty()) {
@@ -180,16 +195,16 @@ Histogram computeHistogram(const FeatureDescriptor& descriptor, bool reweight,
 }
 
 std::vector<Histogram> buildHistogramDataset(
-    const std::vector<FeatureDescriptor>& descriptor_dataset, int max_iter,
-    int num_clusters, bool use_flann, bool use_opencv_kmeans, float epsilon,
+    const std::vector<FeatureDescriptor>& descriptor_dataset, int num_clusters,
+    int max_iter, float epsilon, bool use_opencv_kmeans, bool use_flann,
     bool reweight, bool save_to_disk, bool verbose) {
   if (verbose) {
     std::cout << "Building histogram dataset...\n";
     std::cout << "\tBuilding codebook\n";
   }
   Dictionary& dictionary = Dictionary::getInstance();
-  dictionary.build(max_iter, num_clusters, descriptor_dataset, use_flann,
-                   use_opencv_kmeans, epsilon);
+  dictionary.build(descriptor_dataset, num_clusters, max_iter, epsilon,
+                   use_opencv_kmeans, use_flann);
   fs::path hist_dataset_path;
   if (save_to_disk) {
     fs::path image_path{descriptor_dataset[0].getImagePath()};
@@ -319,25 +334,6 @@ std::vector<Histogram> loadHistogramDataset(const fs::path& dataset_path,
     std::cout << "Done\n\n";
   }
   return histogram_dataset;
-}
-
-static void histToDisk_(bool save_to_disk, bool verbose,
-                        const fs::path& hist_dataset_path,
-                        const fs::path& image_path,
-                        const Histogram& histogram) {
-  if (save_to_disk) {
-    const std::string hist_file_path{
-        (hist_dataset_path / image_path.stem()).string() + ".csv"};
-    try {
-      if (verbose) {
-        std::cout << "\tWriting to disk\n";
-      }
-      histogram.writeToCSV(hist_file_path);
-    } catch (const std::runtime_error& e) {
-      std::cerr << "\t[ERROR] Histogram for image " << image_path
-                << " not saved to disk! " << e.what() << '\n';
-    }
-  }
 }
 
 }  // namespace bow::io::dataset

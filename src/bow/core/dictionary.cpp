@@ -8,21 +8,25 @@
 #include <opencv2/core/mat.hpp>
 #include <opencv2/flann.hpp>
 
+#include "bow/algorithms/algorithms.hpp"
 #include "bow/core/descriptor.hpp"
-#include "bow/core/kmeans.hpp"
 
+using bow::algorithms::kMeans;
 namespace fs = std::filesystem;
 
 namespace bow {
 
-void Dictionary::build(int max_iter, int dict_size,
-                       const std::vector<FeatureDescriptor>& descriptor_dataset,
-                       bool build_flann_index, bool use_opencv_kmeans,
-                       double epsilon) {
+void Dictionary::buildIndex(const cvflann::IndexParams& index_params) {
+  kdtree_ = std::make_unique<flannL2index>(codebook_, index_params);
+}
+
+void Dictionary::build(const std::vector<FeatureDescriptor>& descriptor_dataset,
+                       int dict_size, int max_iter, double epsilon,
+                       bool use_opencv_kmeans, bool use_flann) {
   if (!descriptor_dataset.empty()) {
-    codebook_ = kMeans(descriptor_dataset, dict_size, max_iter,
-                       use_opencv_kmeans, epsilon);
-    if (build_flann_index) {
+    codebook_ = kMeans(descriptor_dataset, dict_size, max_iter, epsilon,
+                       use_opencv_kmeans, use_flann);
+    if (use_flann) {
       buildIndex();
     }
   }

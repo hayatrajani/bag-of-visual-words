@@ -8,7 +8,6 @@
 #include <opencv2/flann.hpp>
 
 #include "bow/core/descriptor.hpp"
-#include "bow/core/kmeans.hpp"
 
 namespace bow {
 
@@ -23,9 +22,7 @@ class Dictionary {
   ~Dictionary() = default;
 
   void buildIndex(const cvflann::IndexParams& index_params =
-                      cvflann::AutotunedIndexParams()) {
-    kdtree_ = std::make_unique<flannL2index>(codebook_, index_params);
-  }
+                      cvflann::AutotunedIndexParams());
 
  public:
   Dictionary(const Dictionary&) = delete;
@@ -38,10 +35,9 @@ class Dictionary {
     return instance;
   }
 
-  void build(int max_iter, int dict_size,
-             const std::vector<FeatureDescriptor>& descriptor_dataset,
-             bool build_flann_index = false, bool use_opencv_kmeans = true,
-             double epsilon = 0.001);
+  void build(const std::vector<FeatureDescriptor>& descriptor_dataset,
+             int dict_size, int max_iter, double epsilon = 1e-6,
+             bool use_opencv_kmeans = true, bool use_flann = true);
 
   void serialize(const std::string& dict_filename,
                  const std::string& flann_params_filename = "") const;
@@ -51,12 +47,6 @@ class Dictionary {
 
   const cv::Mat& getVocabulary() const { return codebook_; }
   flannL2index* getIndex() const { return kdtree_.get(); }
-  /*std::optional<flannL2index> get_index() const {
-    if (kdtree_) {
-      return *kdtree_;
-    }
-    return {};
-  }*/
 
   int size() const { return codebook_.rows; }
   bool empty() const { return codebook_.empty(); }

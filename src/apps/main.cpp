@@ -123,15 +123,15 @@ int main(int argc, char** argv) {
       const auto descriptor_dataset =
           ds::buildDescriptorDataset(dataset_path, desc_to_disk, verbose);
       histogram_dataset = ds::buildHistogramDataset(
-          descriptor_dataset, max_iter, num_clusters, use_flann,
-          use_opencv_kmeans, epsilon, reweight, hist_to_disk, verbose);
+          descriptor_dataset, num_clusters, max_iter, epsilon,
+          use_opencv_kmeans, use_flann, reweight, hist_to_disk, verbose);
     } else if (var_map.count("descriptor-path")) {
       const fs::path dataset_path{var_map["descriptor-path"].as<std::string>()};
       const auto descriptor_dataset =
           ds::loadDescriptorDataset(dataset_path, verbose);
       histogram_dataset = ds::buildHistogramDataset(
-          descriptor_dataset, max_iter, num_clusters, use_flann,
-          use_opencv_kmeans, epsilon, reweight, hist_to_disk, verbose);
+          descriptor_dataset, num_clusters, max_iter, epsilon,
+          use_opencv_kmeans, use_flann, reweight, hist_to_disk, verbose);
     } else if (var_map.count("histogram-path")) {
       const fs::path dataset_path{var_map["histogram-path"].as<std::string>()};
       histogram_dataset = ds::loadHistogramDataset(dataset_path, verbose);

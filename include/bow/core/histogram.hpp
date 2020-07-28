@@ -1,7 +1,6 @@
 #ifndef BOW_HISTOGRAM_HPP_
 #define BOW_HISTOGRAM_HPP_
 
-#include <iostream>
 #include <string>
 #include <vector>
 
@@ -16,9 +15,6 @@ class Histogram {
   static std::vector<float> idf_;
   const std::string image_path_;
   std::vector<float> data_;
-
-  int nearestNeighbour_(const cv::Mat& descriptor, const cv::Mat& codebook,
-                        flannL2index* kdtree = nullptr);
 
   Histogram(const std::string& image_path, const std::vector<float>& data)
       : image_path_{image_path}, data_{data} {}

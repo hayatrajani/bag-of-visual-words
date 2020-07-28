@@ -3,9 +3,6 @@
 #include <algorithm>
 #include <cmath>
 #include <fstream>
-#include <iostream>
-#include <iterator>
-#include <limits>
 #include <numeric>
 #include <string>
 #include <vector>
@@ -13,34 +10,14 @@
 #include <opencv2/core/mat.hpp>
 #include <opencv2/flann.hpp>
 
+#include "bow/algorithms/algorithms.hpp"
 #include "bow/core/dictionary.hpp"
+
+using bow::algorithms::nearestNeighbour;
 
 namespace bow {
 
 std::vector<float> Histogram::idf_{};
-
-int nearestNeighbour(const cv::Mat& descriptor, const cv::Mat& codebook,
-                     flannL2index* kdtree = nullptr) {
-  if (kdtree) {
-    int k{1};
-    std::vector<int> indices(k);
-    std::vector<float> distances(k);
-    kdtree->knnSearch(descriptor, indices, distances, k,
-                      cvflann::SearchParams());
-    return indices[0];
-  }
-  int nearest_cluster_idx{};
-  float min_dist{std::numeric_limits<float>::max()};
-  for (int r = 0; r < codebook.rows; ++r) {
-    auto diff = codebook.row(r) - descriptor;
-    float dist = static_cast<float>(std::sqrt(diff.dot(diff)));
-    if (dist < min_dist) {
-      min_dist = dist;
-      nearest_cluster_idx = r;
-    }
-  }
-  return nearest_cluster_idx;
-}
 
 Histogram::Histogram(const std::string& image_path, const cv::Mat& descriptors,
                      const Dictionary& dictionary)
