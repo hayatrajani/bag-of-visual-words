@@ -13,10 +13,9 @@ class FeatureDescriptor {
   const std::string image_path_;
   cv::Mat descriptors_;
 
-  FeatureDescriptor(const std::string& image_path, const cv::Mat& descriptors)
-      : image_path_{image_path}, descriptors_{descriptors} {}
-
  public:
+  FeatureDescriptor(const std::string& image_path, const cv::Mat& descriptors)
+      : image_path_{image_path}, descriptors_{descriptors.clone()} {}
   explicit FeatureDescriptor(const std::string& image_path);
 
   static FeatureDescriptor deserialize(const std::string& filename);

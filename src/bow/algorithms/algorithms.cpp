@@ -122,6 +122,9 @@ cv::Mat kMeans(const std::vector<FeatureDescriptor>& descriptor_dataset,
     throw std::runtime_error(
         "Number of clusters greater than the total number of data points!");
   }
+  if (num_clusters <= 0) {
+    throw std::runtime_error("Number of clusters should be greater than zero!");
+  }
   if (num_clusters == stacked_descriptors.rows) {
     return stacked_descriptors;
   }

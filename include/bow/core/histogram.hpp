@@ -16,10 +16,9 @@ class Histogram {
   const std::string image_path_;
   std::vector<float> data_;
 
+ public:
   Histogram(const std::string& image_path, const std::vector<float>& data)
       : image_path_{image_path}, data_{data} {}
-
- public:
   Histogram(const std::string& image_path, const cv::Mat& descriptors,
             const Dictionary& dictionary);
 
