@@ -24,12 +24,12 @@ const int max_features = 25;
 int getMaxFeatures() { return max_features; }
 int getNumColumns() { return cols_num; }
 
-std::vector<bow::FeatureDescriptor>& getDummyData() {
-  static std::vector<bow::FeatureDescriptor> data;
+std::vector<bow::FeatureDescriptor> getDummyData() {
+  std::vector<bow::FeatureDescriptor> data;
   for (int i = 0; i < 100; i += 20) {
     for (size_t j = 0; j < 5; j++) {
-      data.emplace_back(bow::FeatureDescriptor(
-          "test.png", cv::Mat_<float>(rows_num, cols_num, i)));
+      auto row = cv::Mat_<float>(rows_num, cols_num, i);
+      data.emplace_back(bow::FeatureDescriptor("test.png", row));
     }
   }
   return data;
@@ -39,7 +39,8 @@ cv::Mat getAllFeatures() {
   cv::Mat data;
   for (int i = 0; i < 100; i += 20) {
     for (size_t j = 0; j < 5; j++) {
-      data.push_back(cv::Mat_<float>(rows_num, cols_num, i));
+      data.push_back(
+          cv::Mat_<float>(rows_num, cols_num, static_cast<float>(i)));
     }
   }
   return data;

@@ -14,7 +14,7 @@
 
 static void TestKMeans(const cv::Mat& gt_cluster, bool use_cv_kmeans = true,
                        bool use_flann = false) {
-  auto& data = getDummyData();
+  const auto& data = getDummyData();
   const double epsilon = 1e-6;
   const int dict_size = gt_cluster.rows;
   const int iterations = 10;
@@ -41,7 +41,7 @@ TEST(KMeansClustering, EmptyData) {
 }
 
 TEST(KMeansClustering, NegativeClusters) {
-  auto& data = getDummyData();
+  const auto& data = getDummyData();
   const int dict_size = -1;
   const int iterations = 10;
 
@@ -50,7 +50,7 @@ TEST(KMeansClustering, NegativeClusters) {
 }
 
 TEST(KMeansClustering, NullClusters) {
-  auto& data = getDummyData();
+  const auto& data = getDummyData();
   const int dict_size = 0;
   const int iterations = 10;
 
@@ -59,7 +59,7 @@ TEST(KMeansClustering, NullClusters) {
 }
 
 TEST(KMeansClustering, MoreLabelsThanFeatures) {
-  auto& data = getDummyData();
+  const auto& data = getDummyData();
   const int dict_size = getMaxFeatures() + 1;
   const int iterations = 10;
 
@@ -72,8 +72,10 @@ TEST(KMeansClustering, SelectAllFeatures) { TestKMeans(getAllFeatures()); }
 TEST(KMeansClustering, MinimumSignificantCluster_CV) {
   TestKMeans(get5Kmeans());
 }
-TEST(KMeansClustering, Use3Words_CV) { TestKMeans(get3Kmeans()); }
+// HACK(nacho): If you run Use3Words_CV before Use2Words_CV it doesn't work, go
+// figure out to the OpenCV kmeans implementation
 TEST(KMeansClustering, Use2Words_CV) { TestKMeans(get2Kmeans()); }
+TEST(KMeansClustering, Use3Words_CV) { TestKMeans(get3Kmeans()); }
 
 TEST(KMeansClustering, MinimumSignificantCluster_CustomNN) {
   TestKMeans(get5Kmeans(), false);
