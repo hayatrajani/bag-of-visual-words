@@ -10,6 +10,7 @@ if(ENABLE_CPPCHECK)
         ${CPPCHECK}
         --enable=all
         --suppress=missingInclude
+        --suppress=unusedFunction
         --inconclusive)
   else()
     message(SEND_ERROR "cppcheck requested but executable not found")
