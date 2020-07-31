@@ -1,6 +1,6 @@
 // @file    test_data.hpp
-// @author  Ignacio Vizzo (creator) [ivizzo@uni-bonn.de]
-// @author  Hayat Rajani (editor)   [hayat.rajani@uni-bonn.de]
+// @author  Ignacio Vizzo   [ivizzo@uni-bonn.de]
+// @author  Hayat Rajani    [hayat.rajani@uni-bonn.de]
 //
 // Original Copyright (c) 2020 Ignacio Vizzo, all rights reserved
 
@@ -86,12 +86,6 @@ cv::Mat get5Kmeans();
 //  30, 30, 30, 30, 30, 30, 30, 30, 30, 30;
 //  70, 70, 70, 70, 70, 70, 70, 70, 70, 70
 cv::Mat get3Kmeans();
-
-// With values [0,2,4,6,8], the 2 kMeans are [2, 7]
-//                ^    ^
-//  20, 20, 20, 20, 20, 20, 20, 20, 20, 20;
-//  70, 70, 70, 70, 70, 70, 70, 70, 70, 70
-cv::Mat get2Kmeans();
 
 int getMaxFeatures();
 int getNumColumns();

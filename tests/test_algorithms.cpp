@@ -1,6 +1,6 @@
 // @file    test_algorithms.hpp
-// @author  Ignacio Vizzo (creator) [ivizzo@uni-bonn.de]
-// @author  Hayat Rajani (editor)   [hayat.rajani@uni-bonn.de]
+// @author  Ignacio Vizzo   [ivizzo@uni-bonn.de]
+// @author  Hayat Rajani    [hayat.rajani@uni-bonn.de]
 //
 // Original Copyright (c) 2020 Ignacio Vizzo, all rights reserved
 
@@ -72,23 +72,16 @@ TEST(KMeansClustering, SelectAllFeatures) { TestKMeans(getAllFeatures()); }
 TEST(KMeansClustering, MinimumSignificantCluster_CV) {
   TestKMeans(get5Kmeans());
 }
-// HACK(nacho): If you run Use3Words_CV before Use2Words_CV it doesn't work, go
-// figure out to the OpenCV kmeans implementation
-TEST(KMeansClustering, Use2Words_CV) { TestKMeans(get2Kmeans()); }
 TEST(KMeansClustering, Use3Words_CV) { TestKMeans(get3Kmeans()); }
 
-TEST(KMeansClustering, MinimumSignificantCluster_CustomNN) {
+TEST(KMeansClustering, MinimumSignificantCluster_Custom_NN) {
   TestKMeans(get5Kmeans(), false);
 }
-TEST(KMeansClustering, Use3Words_CustomNN) { TestKMeans(get3Kmeans(), false); }
-TEST(KMeansClustering, Use2Words_CustomNN) { TestKMeans(get2Kmeans(), false); }
+TEST(KMeansClustering, Use3Words_Custom_NN) { TestKMeans(get3Kmeans(), false); }
 
-TEST(KMeansClustering, MinimumSignificantCluster_CustomFLAN) {
+TEST(KMeansClustering, MinimumSignificantCluster_Custom_FLANN) {
   TestKMeans(get5Kmeans(), false, true);
 }
-TEST(KMeansClustering, Use3Words_CustomFLAN) {
+TEST(KMeansClustering, Use3Words_Custom_FLAN) {
   TestKMeans(get3Kmeans(), false, true);
-}
-TEST(KMeansClustering, Use2Words_CustomFLAN) {
-  TestKMeans(get2Kmeans(), false, true);
 }

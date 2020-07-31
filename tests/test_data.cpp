@@ -19,61 +19,44 @@ const int rows_num = 1;
 const int cols_num = 10;
 const int max_features = 25;
 
-}  // namespace
+cv::Mat generateMat(int min, int max, int steps, int repeat) {
+  cv::Mat data;
+  for (int i = min; i < max; i += steps) {
+    for (int j = 0; j < repeat; j++) {
+      cv::Mat_<float> vec(rows_num, cols_num, static_cast<float>(i));
+      data.push_back(vec);
+    }
+  }
+  return data;
+}
+
+cv::Mat generateRows(std::vector<float> values) {
+  cv::Mat data;
+  for (float& value : values) {
+    data.push_back(cv::Mat_<float>(rows_num, cols_num, value));
+  }
+  return data;
+}
+
+}  // anonymous namespace
 
 int getMaxFeatures() { return max_features; }
+
 int getNumColumns() { return cols_num; }
+
+cv::Mat get3Features() { return generateRows({5.0F, 15.0F, 115.0F}); }
+
+cv::Mat get3Kmeans() { return generateRows({0.0F, 30.0F, 70.0F}); }
+
+cv::Mat get5Kmeans() { return generateMat(0, 100, 20, 1); }
+
+cv::Mat getAllFeatures() { return generateMat(0, 100, 20, 5); }
 
 std::vector<bow::FeatureDescriptor> getDummyData() {
   std::vector<bow::FeatureDescriptor> data;
-  for (int i = 0; i < 100; i += 20) {
-    for (size_t j = 0; j < 5; j++) {
-      auto row = cv::Mat_<float>(rows_num, cols_num, i);
-      data.emplace_back(bow::FeatureDescriptor("test.png", row));
-    }
+  for (size_t i = 0; i < 100; i += 20) {
+    auto row = generateMat(i, i + 1, i + 1, 5);
+    data.emplace_back(bow::FeatureDescriptor("dummy.png", row));
   }
-  return data;
-}
-
-cv::Mat getAllFeatures() {
-  cv::Mat data;
-  for (int i = 0; i < 100; i += 20) {
-    for (size_t j = 0; j < 5; j++) {
-      data.push_back(
-          cv::Mat_<float>(rows_num, cols_num, static_cast<float>(i)));
-    }
-  }
-  return data;
-}
-
-cv::Mat get3Features() {
-  cv::Mat data;
-  data.push_back(cv::Mat_<float>(rows_num, cols_num, 5.0F));
-  data.push_back(cv::Mat_<float>(rows_num, cols_num, 15.0F));
-  data.push_back(cv::Mat_<float>(rows_num, cols_num, 115.0F));
-  return data;
-}
-
-cv::Mat get5Kmeans() {
-  cv::Mat data;
-  for (int i = 0; i < 100; i += 20) {
-    cv::Mat_<float> vec(rows_num, cols_num, i);
-    data.push_back(vec);
-  }
-  return data;
-}
-
-cv::Mat get3Kmeans() {
-  cv::Mat data;
-  data.push_back(cv::Mat_<float>(rows_num, cols_num, 0.0F));
-  data.push_back(cv::Mat_<float>(rows_num, cols_num, 30.0F));
-  data.push_back(cv::Mat_<float>(rows_num, cols_num, 70.0F));
-  return data;
-}
-
-cv::Mat get2Kmeans() {
-  cv::Mat data;
-  data.push_back(cv::Mat_<float>(rows_num, cols_num, 20.000002F));
-  data.push_back(cv::Mat_<float>(rows_num, cols_num, 70.0F));
   return data;
 }
