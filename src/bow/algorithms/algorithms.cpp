@@ -1,3 +1,6 @@
+// @file    algorithms.cpp
+// @author  Hayat Rajani    [hayat.rajani@uni-bonn.de]
+
 #include "bow/algorithms/algorithms.hpp"
 
 #include <algorithm>
@@ -19,6 +22,7 @@ namespace bow::algorithms {
 
 namespace {
 
+// Randomly selects k data points from the dataset as initial cluster centers
 void initClusterCenters(const cv::Mat& dataset, cv::Mat& centers,
                         int num_clusters) {
   std::vector<int> range(dataset.rows);
@@ -66,7 +70,7 @@ void kmeans_(const cv::Mat& stacked_descriptors, cv::Mat& labels,
         delta[k] = cv::norm(old_center, new_center);
       }
     }
-    // stop if the average change in centroids is smaller than epsilon
+    // stop early if the average change in centers is smaller than epsilon
     auto avg_delta =
         (std::accumulate(delta.begin(), delta.end(), 0.0) / delta.size());
     if (avg_delta <= epsilon) {
@@ -88,14 +92,16 @@ int nearestNeighbour(const cv::Mat& descriptor, const cv::Mat& codebook,
   if (codebook.rows == 1) {
     return 0;
   }
+  // perform a FLANN-based search
   if (kdtree) {
-    int k{1};
+    const int k{1};
     std::vector<int> indices(k);
     std::vector<float> distances(k);
     kdtree->knnSearch(descriptor, indices, distances, k,
                       cvflann::SearchParams());
     return indices[0];
   }
+  // compare Euclidean distances
   int nearest_cluster_idx{};
   float min_dist{std::numeric_limits<float>::max()};
   for (int r = 0; r < codebook.rows; ++r) {
@@ -114,6 +120,9 @@ cv::Mat kMeans(const std::vector<FeatureDescriptor>& descriptor_dataset,
   if (descriptor_dataset.empty()) {
     throw std::runtime_error("Empty dataset!");
   }
+  if (num_clusters <= 0) {
+    throw std::runtime_error("Number of clusters should be greater than zero!");
+  }
   cv::Mat stacked_descriptors;
   for (const auto& descriptor : descriptor_dataset) {
     stacked_descriptors.push_back(descriptor.getDescriptors());
@@ -121,9 +130,6 @@ cv::Mat kMeans(const std::vector<FeatureDescriptor>& descriptor_dataset,
   if (num_clusters > stacked_descriptors.rows) {
     throw std::runtime_error(
         "Number of clusters greater than the total number of data points!");
-  }
-  if (num_clusters <= 0) {
-    throw std::runtime_error("Number of clusters should be greater than zero!");
   }
   if (num_clusters == stacked_descriptors.rows) {
     return stacked_descriptors;

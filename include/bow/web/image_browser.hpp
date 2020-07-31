@@ -1,6 +1,6 @@
 // @file    image_browser.hpp
-// @author  Ignacio Vizzo (creator) [ivizzo@uni-bonn.de]
-// @author  Hayat Rajani (modifier) [hayat.rajani@uni-bonn.de]
+// @author  Ignacio Vizzo   [ivizzo@uni-bonn.de]
+// @author  Hayat Rajani    [hayat.rajani@uni-bonn.de]
 //
 // Original Copyright (c) 2020 Ignacio Vizzo, all rights reserved
 
@@ -18,7 +18,7 @@ namespace bow::web::image_browser {
  *
  * @param query_image_path Path to query image.
  * @param similarities     A vector of pairs of image paths with their
- * respective distances to the query image.
+ *                         respective distances to the query image.
  * @param output_dir       Path to output directory, if any.
  * @param css_path         Path to CSS file, if any.
  */

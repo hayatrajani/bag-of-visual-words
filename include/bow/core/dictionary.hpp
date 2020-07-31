@@ -1,3 +1,6 @@
+// @file    dictionary.hpp
+// @author  Hayat Rajani    [hayat.rajani@uni-bonn.de]
+
 #ifndef BOW_DICTIONARY_HPP_
 #define BOW_DICTIONARY_HPP_
 

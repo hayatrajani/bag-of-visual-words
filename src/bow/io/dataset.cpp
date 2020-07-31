@@ -1,3 +1,6 @@
+// @file    dataset.cpp
+// @author  Hayat Rajani    [hayat.rajani@uni-bonn.de]
+
 #include "bow/io/dataset.hpp"
 
 #include <filesystem>
@@ -34,14 +37,14 @@ static void histToDisk_(bool save_to_disk, bool verbose,
   }
 }
 
-int datasetSize(const fs::path& path, const std::string& extension) {
+int datasetSize(const fs::path& dir_path, const std::string& extension) {
   if (!extension.empty()) {
-    return std::count_if(fs::directory_iterator(path), {},
+    return std::count_if(fs::directory_iterator(dir_path), {},
                          [&extension](auto file) {
                            return file.path().extension() == extension;
                          });
   }
-  return std::distance(fs::directory_iterator(path), {});
+  return std::distance(fs::directory_iterator(dir_path), {});
 }
 
 FeatureDescriptor extractDescriptors(const std::string& image_path,

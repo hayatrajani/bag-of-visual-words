@@ -1,3 +1,6 @@
+// @file    histogram.hpp
+// @author  Hayat Rajani    [hayat.rajani@uni-bonn.de]
+
 #ifndef BOW_HISTOGRAM_HPP_
 #define BOW_HISTOGRAM_HPP_
 
