@@ -1,3 +1,6 @@
+// @file    image_browser.cpp
+// @author  Hayat Rajani    [hayat.rajani@uni-bonn.de]
+
 #include "bow/web/image_browser.hpp"
 
 #include <filesystem>

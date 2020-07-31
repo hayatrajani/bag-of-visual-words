@@ -1,3 +1,6 @@
+// @file    descriptor.cpp
+// @author  Hayat Rajani    [hayat.rajani@uni-bonn.de]
+
 #include "bow/core/descriptor.hpp"
 
 #include <fstream>

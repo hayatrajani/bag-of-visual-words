@@ -1,3 +1,6 @@
+// @file    descriptor.hpp
+// @author  Hayat Rajani    [hayat.rajani@uni-bonn.de]
+
 #ifndef BOW_FEATURE_DESCRIPTOR_HPP_
 #define BOW_FEATURE_DESCRIPTOR_HPP_
 

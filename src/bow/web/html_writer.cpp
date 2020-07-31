@@ -1,3 +1,6 @@
+// @file    html_writer.cpp
+// @author  Hayat Rajani    [hayat.rajani@uni-bonn.de]
+
 #include "bow/web/html_writer.hpp"
 
 #include <filesystem>

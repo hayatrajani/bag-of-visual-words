@@ -1,3 +1,6 @@
+// @file    histogram.cpp
+// @author  Hayat Rajani    [hayat.rajani@uni-bonn.de]
+
 #include "bow/core/histogram.hpp"
 
 #include <algorithm>

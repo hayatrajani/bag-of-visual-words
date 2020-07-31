@@ -47,12 +47,12 @@ int main(int argc, char** argv) {
       "number of clusters")
     ("max-iter,m", po::value<int>()->default_value(25),
       "maximum number of iterations")
-    ("epsilon,e", po::value<float>()->default_value(0.001),
+    ("epsilon,e", po::value<float>()->default_value(1e-6),
       "stop iterations if specified accuracy, epsilon, is reached "
       "(only for opencv kmeans)")
-    ("num-similar,n", po::value<int>()->default_value(1),
+    ("num-similar,n", po::value<int>()->default_value(10),
       "number of similar images to find")
-    ("reweight", po::value<bool>()->default_value(true),
+    ("reweight", po::value<bool>()->default_value(false),
       "perform TF-IDF reweighting for histograms")
     ("save-histograms", po::value<bool>()->default_value(true),
       "save histogram dataset to disk")
@@ -99,7 +99,7 @@ int main(int argc, char** argv) {
     return EXIT_FAILURE;
   }
 
-  if (var_map.count("help")) {
+  if (argc == 1 || var_map.count("help")) {
     std::cout << display_options << '\n';
     return EXIT_SUCCESS;
   }

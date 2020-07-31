@@ -1,3 +1,6 @@
+// @file    dictionary.cpp
+// @author  Hayat Rajani    [hayat.rajani@uni-bonn.de]
+
 #include "bow/core/dictionary.hpp"
 
 #include <filesystem>
