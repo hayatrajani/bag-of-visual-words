@@ -50,7 +50,7 @@ class Histogram {
   static void saveIDF(const std::string& filename);
   static void loadIDF(const std::string& filename);
   static std::vector<float> getIDF() { return idf_; }
-  static bool hasIDF() { return idf_.empty(); }
+  static bool hasIDF() { return !idf_.empty(); }
   void reweight();
 
   float compare(const Histogram& other) const;

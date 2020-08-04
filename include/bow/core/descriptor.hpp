@@ -13,7 +13,7 @@ namespace bow {
 
 class FeatureDescriptor {
  private:
-  const std::string image_path_;
+  std::string image_path_;
   cv::Mat descriptors_;
 
  public:

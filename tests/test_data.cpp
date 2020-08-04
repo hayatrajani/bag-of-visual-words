@@ -1,6 +1,6 @@
 // @file    test_data.cpp
-// @author  Ignacio Vizzo (creator) [ivizzo@uni-bonn.de]
-// @author  Hayat Rajani (editor)   [hayat.rajani@uni-bonn.de]
+// @author  Ignacio Vizzo   [ivizzo@uni-bonn.de]
+// @author  Hayat Rajani    [hayat.rajani@uni-bonn.de]
 //
 // Original Copyright (c) 2020 Ignacio Vizzo, all rights reserved
 

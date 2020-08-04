@@ -1,4 +1,4 @@
-// @file    test_algorithms.hpp
+// @file    test_algorithms.cpp
 // @author  Ignacio Vizzo   [ivizzo@uni-bonn.de]
 // @author  Hayat Rajani    [hayat.rajani@uni-bonn.de]
 //
@@ -30,6 +30,41 @@ static void TestKMeans(const cv::Mat& gt_cluster, bool use_cv_kmeans = true,
       << "gt_centroids:\n"
       << gt_cluster << "\ncomputed centroids:\n"
       << centroids;
+}
+
+TEST(NearestNeighbour, EmptyDescriptor) {
+  EXPECT_THROW(bow::algorithms::nearestNeighbour({}, get5Kmeans()),
+               std::runtime_error);
+}
+
+TEST(NearestNeighbour, DescriptorMatrix) {
+  EXPECT_THROW(
+      bow::algorithms::nearestNeighbour(getAllFeatures(), get5Kmeans()),
+      std::runtime_error);
+}
+
+TEST(NearestNeighbour, EmptyCodebook) {
+  EXPECT_THROW(bow::algorithms::nearestNeighbour(
+                   cv::Mat_<float>(1, getNumColumns(), 7.0F), {}),
+               std::runtime_error);
+}
+
+TEST(NearestNeighbour, UnitCodebook) {
+  auto index = bow::algorithms::nearestNeighbour(
+      cv::Mat_<float>(1, getNumColumns(), 7.0F),
+      cv::Mat_<float>(1, getNumColumns(), 70.0F));
+  EXPECT_EQ(index, 0);
+}
+
+TEST(NearestNeighbour, TrivialExample) {
+  const auto gt = cv::Mat_<float>(1, getNumColumns(), 20.0F);
+  const auto codebook = get5Kmeans();
+  auto index = bow::algorithms::nearestNeighbour(
+      cv::Mat_<float>(1, getNumColumns(), 15.0F), codebook);
+  EXPECT_TRUE(mat_are_equal<float>(gt, codebook.row(index)))
+      << "expected:\n"
+      << gt << "\ncomputed:\n"
+      << codebook.row(index);
 }
 
 TEST(KMeansClustering, EmptyData) {
@@ -72,16 +107,19 @@ TEST(KMeansClustering, SelectAllFeatures) { TestKMeans(getAllFeatures()); }
 TEST(KMeansClustering, MinimumSignificantCluster_CV) {
   TestKMeans(get5Kmeans());
 }
+
 TEST(KMeansClustering, Use3Words_CV) { TestKMeans(get3Kmeans()); }
 
 TEST(KMeansClustering, MinimumSignificantCluster_Custom_NN) {
   TestKMeans(get5Kmeans(), false);
 }
+
 TEST(KMeansClustering, Use3Words_Custom_NN) { TestKMeans(get3Kmeans(), false); }
 
 TEST(KMeansClustering, MinimumSignificantCluster_Custom_FLANN) {
   TestKMeans(get5Kmeans(), false, true);
 }
+
 TEST(KMeansClustering, Use3Words_Custom_FLAN) {
   TestKMeans(get3Kmeans(), false, true);
 }
