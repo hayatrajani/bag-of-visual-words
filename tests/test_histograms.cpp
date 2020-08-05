@@ -8,7 +8,6 @@
 #include <gtest/gtest.h>
 
 #include <filesystem>
-#include <iostream>
 #include <numeric>
 #include <vector>
 
@@ -292,8 +291,6 @@ TEST(Histogram, CompareList) {
     for (auto& result : results) {
       similarities.emplace_back(result.second);
     }
-    std::cout << "Expected: " << gt_similarities[i] << '\n';
-    std::cout << "Computed: " << similarities << '\n';
     EXPECT_TRUE(vec_are_equal(similarities, gt_similarities[i], 1e-2));
   }
 }

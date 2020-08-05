@@ -38,7 +38,7 @@
 //  80, 80, 80, 80, 80, 80, 80, 80, 80, 80;
 //  80, 80, 80, 80, 80, 80, 80, 80, 80, 80;
 //  80, 80, 80, 80, 80, 80, 80, 80, 80, 80
-std::vector<bow::FeatureDescriptor> getDummyData();
+std::vector<bow::FeatureDescriptor> getDummyData(const std::string& path = "");
 
 //  00, 00, 00, 00, 00, 00, 00, 00, 00, 00;
 //  00, 00, 00, 00, 00, 00, 00, 00, 00, 00;

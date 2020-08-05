@@ -178,7 +178,7 @@ Histogram computeHistogram(const FeatureDescriptor& descriptor, bool reweight,
       if (verbose) {
         std::cout << "Reweighting histogram\n";
       }
-      if (!Histogram::hasIDF()) {
+      if (Histogram::hasIDF()) {
         histogram.reweight();
       } else {
         std::cerr

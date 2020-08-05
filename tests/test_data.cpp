@@ -52,11 +52,12 @@ cv::Mat get5Kmeans() { return generateMat(0, 100, 20, 1); }
 
 cv::Mat getAllFeatures() { return generateMat(0, 100, 20, 5); }
 
-std::vector<bow::FeatureDescriptor> getDummyData() {
+std::vector<bow::FeatureDescriptor> getDummyData(const std::string& path) {
   std::vector<bow::FeatureDescriptor> data;
   for (size_t i = 0; i < 100; i += 20) {
     auto row = generateMat(i, i + 1, i + 1, 5);
-    data.emplace_back(bow::FeatureDescriptor("dummy.png", row));
+    data.emplace_back(bow::FeatureDescriptor(
+        path + "dummy_" + std::to_string(i) + ".png", row));
   }
   return data;
 }
