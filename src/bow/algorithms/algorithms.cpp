@@ -120,6 +120,9 @@ cv::Mat kMeans(const std::vector<FeatureDescriptor>& descriptor_dataset,
   if (descriptor_dataset.empty()) {
     throw std::runtime_error("Empty dataset!");
   }
+  if (num_clusters <= 0) {
+    throw std::runtime_error("Number of clusters should be greater than zero!");
+  }
   cv::Mat stacked_descriptors;
   for (const auto& descriptor : descriptor_dataset) {
     stacked_descriptors.push_back(descriptor.getDescriptors());

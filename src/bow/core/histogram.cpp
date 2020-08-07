@@ -87,23 +87,27 @@ std::ostream& operator<<(std::ostream& out, const Histogram& histogram) {
 }
 
 void Histogram::computeIDF(const std::vector<Histogram>& histogram_dataset) {
-  float dataset_size = histogram_dataset.size();
-  int codebook_size = histogram_dataset[0].size();
-  if (!idf_.empty()) {
-    idf_.clear();
-  }
-  idf_.resize(codebook_size);
-  for (const auto& histogram : histogram_dataset) {
-    if (!histogram.empty()) {
-      for (int c = 0; c < codebook_size; ++c) {
-        if (histogram[c] > 0) {
-          idf_[c]++;
+  if (!histogram_dataset.empty()) {
+    float dataset_size = histogram_dataset.size();
+    int codebook_size = histogram_dataset[0].size();
+    if (!idf_.empty()) {
+      idf_.clear();
+    }
+    idf_.resize(codebook_size);
+    for (const auto& histogram : histogram_dataset) {
+      if (!histogram.empty()) {
+        for (int c = 0; c < codebook_size; ++c) {
+          if (histogram[c] > 0) {
+            idf_[c]++;
+          }
         }
       }
     }
-  }
-  for (int c = 0; c < codebook_size; ++c) {
-    idf_[c] = std::log(dataset_size / idf_[c]);
+    for (int c = 0; c < codebook_size; ++c) {
+      idf_[c] = std::log(dataset_size / idf_[c]);
+    }
+  } else {
+    idf_.clear();
   }
 }
 
@@ -139,19 +143,18 @@ void Histogram::reweight() {
 }
 
 float Histogram::compare(const Histogram& other) const {
-  if (data_.empty() || other.empty()) {
-    return 1.0F;
-  }
   if (data_.empty() && other.empty()) {
     return 0.0F;
   }
+  if (data_.empty() || other.empty()) {
+    return 1.0F;
+  }
   return 1.0F -
-         static_cast<float>(
-             std::inner_product(data_.begin(), data_.end(), other.begin(), 0) /
-             (std::sqrt(std::inner_product(data_.begin(), data_.end(),
-                                           data_.begin(), 0)) *
-              std::sqrt(std::inner_product(other.begin(), other.end(),
-                                           other.begin(), 0))));
+         (std::inner_product(data_.begin(), data_.end(), other.begin(), 0.0F) /
+          (std::sqrt(std::inner_product(data_.begin(), data_.end(),
+                                        data_.begin(), 0.0F)) *
+           std::sqrt(std::inner_product(other.begin(), other.end(),
+                                        other.begin(), 0.0F))));
 }
 
 std::vector<std::pair<std::string, float>> Histogram::compare(

@@ -5,7 +5,7 @@
 #
 # https://docs.gitlab.com/ce/api/projects.html#upload-a-file
 
-PROJECT_ID=853
+PROJECT_ID=1173
 
 # Download latest artifacts to your local machine:
 curl --output artifacts.zip --header "PRIVATE-TOKEN: $IGG_GITLAB_TOKEN" \

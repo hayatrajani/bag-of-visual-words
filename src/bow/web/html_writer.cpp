@@ -49,6 +49,7 @@ void HTML_Writer::addImage(const std::string& image_path, float distance,
     std::cerr << "[ERROR] Image does not exist!\n";
   } else if (image_path_.extension() != ".png") {
     std::cerr << "[ERROR] Invalid image!\n";
+    return;
   }
   if (query_image) {
     fout_ << "<div class=\"column\" style=\"border: 5px solid green;\">\n";

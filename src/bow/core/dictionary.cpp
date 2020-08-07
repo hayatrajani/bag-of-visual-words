@@ -31,6 +31,23 @@ void Dictionary::build(const std::vector<FeatureDescriptor>& descriptor_dataset,
                        use_opencv_kmeans, use_flann);
     if (use_flann) {
       buildIndex();
+    } else {
+      kdtree_ = nullptr;
+    }
+  }
+}
+
+void Dictionary::setVocabulary(const cv::Mat& codebook,
+                               bool build_flann_index) {
+  if (codebook.empty()) {
+    codebook_.release();
+    kdtree_ = nullptr;
+  } else {
+    codebook_ = codebook.clone();
+    if (build_flann_index) {
+      buildIndex();
+    } else {
+      kdtree_ = nullptr;
     }
   }
 }

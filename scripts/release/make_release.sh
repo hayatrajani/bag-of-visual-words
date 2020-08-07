@@ -5,7 +5,7 @@
 #
 # README: https://gitlab.igg.uni-bonn.de/help/api/releases/index.md
 
-PROJECT_ID=853
+PROJECT_ID=1173
 
 # POST
 curl --header 'Content-Type: application/json' \

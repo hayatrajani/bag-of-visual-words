@@ -41,6 +41,7 @@ class Dictionary {
   void build(const std::vector<FeatureDescriptor>& descriptor_dataset,
              int dict_size, int max_iter, double epsilon = 1e-6,
              bool use_opencv_kmeans = true, bool use_flann = true);
+  void setVocabulary(const cv::Mat& codebook, bool build_flann_index = false);
 
   void serialize(const std::string& dict_filename,
                  const std::string& flann_params_filename = "") const;

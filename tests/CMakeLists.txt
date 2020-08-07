@@ -1,9 +1,22 @@
 set(TEST_BINARY ${PROJECT_NAME}_test)
 
 add_executable(${TEST_BINARY}
-               dummy_test.cpp)
+               test_data.cpp
+               test_descriptors.cpp
+               test_algorithms.cpp
+               test_dictionary.cpp
+               test_histograms.cpp
+               test_dataset.cpp
+               test_web.cpp)
 
-target_link_libraries(${TEST_BINARY} GTest::Main)
+target_link_libraries(${TEST_BINARY}
+                        descriptor
+                        algorithms
+                        dictionary
+                        histogram
+                        dataset
+                        image_browser
+                        GTest::Main)
 
 gtest_discover_tests(${TEST_BINARY} WORKING_DIRECTORY
                      ${CMAKE_CURRENT_SOURCE_DIR})
