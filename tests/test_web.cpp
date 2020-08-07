@@ -68,7 +68,7 @@ TEST(Web, CreateImageBrowser) {
 }
 
 TEST(Web, InvalidHTML) {
-  ASSERT_THROW(ib::createImageBrowser(query_path, dummy_similarities, "/"),
+  ASSERT_THROW(ib::createImageBrowser(query_path, dummy_similarities, ""),
                std::runtime_error);
 }
 
