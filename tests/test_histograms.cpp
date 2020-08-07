@@ -1,4 +1,4 @@
-// @file    test_dictionary.cpp
+// @file    test_histogram.cpp
 // @author  Ignacio Vizzo   [ivizzo@uni-bonn.de]
 // @author  Hayat Rajani    [hayat.rajani@uni-bonn.de]
 //

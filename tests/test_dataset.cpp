@@ -1,4 +1,4 @@
-// @file    test_dictionary.cpp
+// @file    test_dataset.cpp
 // @author  Hayat Rajani    [hayat.rajani@uni-bonn.de]
 
 #include <gmock/gmock-matchers.h>
@@ -86,7 +86,6 @@ TEST(Dataset, BuildDescriptorDatasetEmpty) {
 
 TEST(Dataset, BuildDescriptorDatasetToDiskVerbose) {
   testing::internal::CaptureStdout();
-  fs::create_directory(descriptor_dataset_path);
 
   auto descriptor_dataset =
       ds::buildDescriptorDataset(image_dataset_path, true, true);
@@ -182,7 +181,6 @@ TEST(Dataset, BuildHistogramDataset) {
 
 TEST(Dataset, BuildHistogramDatasetToDiskVerbose) {
   testing::internal::CaptureStdout();
-  fs::create_directory(histogram_dataset_path);
 
   auto histogram_dataset = ds::buildHistogramDataset(
       dummy_descriptor_dataset, num_clusters, max_iter, 1e-6, false, false,
@@ -234,7 +232,7 @@ TEST(Dataset, LoadHistogramDatasetVerbose) {
   ASSERT_FALSE(cout.empty());
   ASSERT_THAT(cout, testing::HasSubstr("Done"));
 
-  fs::remove_all(descriptor_dataset_path);
+  fs::remove_all(histogram_dataset_path);
 }
 
 TEST(Dataset, LoadHistogramDatasetEmpty) {

@@ -1,4 +1,4 @@
-// @file    test_dictionary.cpp
+// @file    test_descriptors.cpp
 // @author  Hayat Rajani    [hayat.rajani@uni-bonn.de]
 
 #include <gtest/gtest.h>
