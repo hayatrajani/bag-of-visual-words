@@ -59,7 +59,7 @@ Histogram Histogram::readFromCSV(const std::string& filename) {
   if (bin_count != 0) {
     data.reserve(bin_count);
     while (std::getline(in, line, ',')) {
-      data.emplace_back(std::stoi(line));
+      data.emplace_back(std::stof(line));
     }
   }
   return {image_path, data};
